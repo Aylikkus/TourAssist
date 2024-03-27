@@ -47,10 +47,13 @@ public partial class TourismDbContext : DbContext
     public virtual DbSet<UsertourAttraction> UsertourAttractions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseMySql("server=" + Configuration.MySQLServerIP +
-            ";user=" + Configuration.MySQLUser +
-            ";password=" + Configuration.MySQLPassword + ";database=tourism_db",
-            ServerVersion.Parse("8.0.36-mysql"));
+    {
+        Configuration configuration = Configuration.GetConfiguration();
+        optionsBuilder.UseMySql("server=" + configuration.MySQLServerIP +
+            ";user=" + configuration.MySQLUser +
+            ";password=" + configuration.MySQLPassword + ";database=tourism_db",
+            ServerVersion.Parse(configuration.MySQLVersion));
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
