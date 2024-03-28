@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace TourAssist.Model
@@ -9,9 +10,13 @@ namespace TourAssist.Model
         private static Configuration? instance;
 
         public string MySQLServerIP { get; set; } = "127.0.0.1";
+
         public string MySQLUser { get; set; } = "root";
+
         public string MySQLPassword { get; set; } = "1234";
+
         public string MySQLVersion { get; set; } = "8.0.36-mysql";
+
         public Credentials? Credentials { get; set; }
 
         public static Configuration GetConfiguration()
@@ -41,10 +46,7 @@ namespace TourAssist.Model
                 serializer.Serialize(writer, GetConfiguration());
                 writer.Close();
             }
-            catch (IOException ex)
-            {
-                Debug.WriteLine(ex);
-            }
+            catch { }
         }
 
         public static Configuration? Load()
@@ -55,12 +57,18 @@ namespace TourAssist.Model
             {
                 using (FileStream fs = new FileStream("config.xml", FileMode.OpenOrCreate))
                 {
-                    return (Configuration?)serializer.Deserialize(fs);
+                    XmlReader reader = XmlReader.Create(fs);
+                    if (serializer.CanDeserialize(reader))
+                    {
+                        fs.Position = 0;
+                        return (Configuration?)serializer.Deserialize(fs);
+                    }
+                    else
+                        return null;
                 }
             }
-            catch (IOException ex)
+            catch
             {
-                Debug.WriteLine(ex);
                 return null;
             }
         }

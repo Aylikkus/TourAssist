@@ -7,6 +7,63 @@
         mc:Ignorable="d"
         Title="AdminScreen" Height="450" Width="800">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="countriesGrid" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <ListBox ItemsSource="{Binding Countries}"
+                     SelectedItem="{Binding SelectedCountry}" Grid.RowSpan="2">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock FontSize="18" Text="{Binding Iso31661}"/>
+                            <TextBlock Text="{Binding FullName}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <StackPanel Grid.Column="1" DataContext="{Binding SelectedCountry}">
+                <TextBlock>Код ISO31661</TextBlock>
+                <TextBox Text="{Binding Iso31661, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock>Полное имя</TextBlock>
+                <TextBox Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="1">
+                <Button Content="Добавить" Command="{Binding AddCountry}"/>
+                <Button Content="Удалить" Command="{Binding RemoveCountry}"/>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Column="3" Grid.RowSpan="4">
+            <TextBlock>Редактирование</TextBlock>
+            <Button Content="Страны"/>
+            <Button Content="Регионы"/>
+            <Button Content="Города"/>
+            <Button Content="Особенности"/>
+            <Button Content="Сохранить" Command="{Binding Save}"/>
+        </StackPanel>
+
     </Grid>
 </Window>

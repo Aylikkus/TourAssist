@@ -6,7 +6,15 @@
         xmlns:local="clr-namespace:TourAssist.View"
         mc:Ignorable="d"
         Title="RegistrationScreen" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <StackPanel>
+        <TextBlock>Логин</TextBlock>
+        <TextBox TextWrapping="Wrap" Text="{Binding Login}" Width="120"/>
+        <TextBlock>Пароль</TextBlock>
+        <TextBox TextWrapping="Wrap" Text="{Binding Password}" Width="120"/>
+        <TextBlock>Имя</TextBlock>
+        <TextBox TextWrapping="Wrap" Text="{Binding Name}" Width="120"/>
+        <TextBlock>Фамилия</TextBlock>
+        <TextBox TextWrapping="Wrap" Text="{Binding Surname}" Width="120"/>
+        <Button Content="Зарегистрироваться" Command="{Binding Register}"/>
+    </StackPanel>
 </Window>

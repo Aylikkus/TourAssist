@@ -13,6 +13,22 @@ namespace TourAssist.Model
     {
         public static User? CurrentUser { get; private set; }
 
+        public static Userrole? CurrentRole
+        {
+            get
+            {
+                if (CurrentUser == null) { return null; }
+
+                using (TourismDbContext dbContext = new TourismDbContext())
+                {
+                    var role = dbContext.Userroles.FirstOrDefault(
+                        (r) => r.IdUserRole == CurrentUser.UserRoleIdUserRole);
+
+                    return role;
+                }
+            }
+        }
+
         public static bool Authorize(string login, string password, bool saveCredentials = false)
         {
             Configuration configuration = Configuration.GetConfiguration();
@@ -48,7 +64,7 @@ namespace TourAssist.Model
             return Authorize(credentials.Login, credentials.Password);
         }
 
-        public static bool Register(string login, string password)
+        public static bool Register(string login, string password, string name, string surname)
         {
             string hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(password)));
 
@@ -62,6 +78,8 @@ namespace TourAssist.Model
                 var newUser = new User();
                 newUser.Login = login;
                 newUser.PasswordSha256 = hash;
+                newUser.Name = name;
+                newUser.Surname = surname;
 
                 if (guestRole != null)
                     newUser.UserRoleIdUserRole = guestRole.IdUserRole;
@@ -73,6 +91,11 @@ namespace TourAssist.Model
 
                 return true;
             }
+        }
+
+        public static bool IsValidCredentials(string login, string password)
+        {
+            return login.Length > 3 || password.Length >3;
         }
 
         static AuthManager()

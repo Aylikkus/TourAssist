@@ -170,8 +170,8 @@ CREATE TABLE IF NOT EXISTS `tourism_db`.`User` (
   `Patronymic` VARCHAR(45) NULL,
   `Birth` DATE NOT NULL,
   `UserRole_idUserRole` INT NOT NULL,
-  `Login` VARCHAR(45) NULL,
-  `PasswordSHA256` VARCHAR(32) NULL,
+  `Login` VARCHAR(45) UNIQUE,
+  `PasswordSHA256` VARCHAR(64) NOT NULL,
   PRIMARY KEY (`idUser`),
   INDEX `fk_User_UserRole1_idx` (`UserRole_idUserRole` ASC) VISIBLE,
   CONSTRAINT `fk_User_UserRole1`

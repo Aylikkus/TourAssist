@@ -6,8 +6,13 @@
         xmlns:local="clr-namespace:TourAssist.View"
         mc:Ignorable="d"
         Title="LoginScreen" Height="450" Width="800">
-    <Grid>
-        <Button Content="Button" Command="{Binding OpenRegistration}"/>
-
-    </Grid>
+    <StackPanel>
+        <TextBlock>Логин</TextBlock>
+        <TextBox TextWrapping="Wrap" Text="{Binding Login}" Width="120"/>
+        <TextBlock>Пароль</TextBlock>
+        <TextBox TextWrapping="Wrap" Text="{Binding Password}" Width="120"/>
+        <CheckBox Content="Запомнить меня" IsChecked="{Binding RememberMe}"/>
+        <Button Content="Зарегистрироваться" Command="{Binding OpenRegistration}"/>
+        <Button Content="Войти" Command="{Binding TryLogIntoApp}"/>
+    </StackPanel>
 </Window>

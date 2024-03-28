@@ -17,9 +17,9 @@ public partial class User
 
     public int UserRoleIdUserRole { get; set; }
 
-    public string? Login { get; set; }
+    public string Login { get; set; } = null!;
 
-    public string? PasswordSha256 { get; set; }
+    public string PasswordSha256 { get; set; } = null!;
 
     public virtual ICollection<Entry> Entries { get; set; } = new List<Entry>();
 

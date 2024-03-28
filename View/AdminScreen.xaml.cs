@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TourAssist.ViewModel;
 
 namespace TourAssist.View
 {
@@ -22,6 +23,7 @@ namespace TourAssist.View
         public AdminScreen()
         {
             InitializeComponent();
+            DataContext = new AdminViewModel();
         }
     }
 }
