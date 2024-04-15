@@ -11,7 +11,7 @@ namespace TourAssist.Model
 
         public string MySQLServerIP { get; set; } = "127.0.0.1";
 
-        public string MySQLUser { get; set; } = "root";
+        public string MySQLUser { get; set; } = "tourism_admin";
 
         public string MySQLPassword { get; set; } = "1234";
 

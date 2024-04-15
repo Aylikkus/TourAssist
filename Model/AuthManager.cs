@@ -64,7 +64,8 @@ namespace TourAssist.Model
             return Authorize(credentials.Login, credentials.Password);
         }
 
-        public static bool Register(string login, string password, string name, string surname)
+        public static bool Register(string login, string password, string name, 
+            string surname, DateOnly dateOfBirth)
         {
             string hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(password)));
 
@@ -80,6 +81,7 @@ namespace TourAssist.Model
                 newUser.PasswordSha256 = hash;
                 newUser.Name = name;
                 newUser.Surname = surname;
+                newUser.Birth = dateOfBirth;
 
                 if (guestRole != null)
                     newUser.UserRoleIdUserRole = guestRole.IdUserRole;
@@ -87,7 +89,14 @@ namespace TourAssist.Model
                     return false;
 
                 dbContext.Users.Add(newUser);
-                dbContext.SaveChanges();
+                try
+                {
+                    dbContext.SaveChanges();
+                }
+                catch
+                {
+                    return false;
+                }
 
                 return true;
             }
@@ -95,7 +104,7 @@ namespace TourAssist.Model
 
         public static bool IsValidCredentials(string login, string password)
         {
-            return login.Length > 3 || password.Length >3;
+            return login?.Length > 3 || password?.Length > 3;
         }
 
         static AuthManager()

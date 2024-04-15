@@ -15,6 +15,8 @@
         <TextBox TextWrapping="Wrap" Text="{Binding Name}" Width="120"/>
         <TextBlock>Фамилия</TextBlock>
         <TextBox TextWrapping="Wrap" Text="{Binding Surname}" Width="120"/>
+        <TextBlock>Дата рождения</TextBlock>
+        <Calendar DisplayDate="{Binding DateTimeOfBirth}"/>
         <Button Content="Зарегистрироваться" Command="{Binding Register}"/>
     </StackPanel>
 </Window>

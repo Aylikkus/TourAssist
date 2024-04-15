@@ -7,7 +7,9 @@ public partial class Peculiarity
 {
     public int IdPeculiarity { get; set; }
 
-    public string Decription { get; set; } = null!;
+    public string Description { get; set; } = null!;
+
+    public virtual ICollection<PecularitiesCity> PecularitiesCities { get; set; } = new List<PecularitiesCity>();
 
     public virtual ICollection<PecularitiesCountry> PecularitiesCountries { get; set; } = new List<PecularitiesCountry>();
 

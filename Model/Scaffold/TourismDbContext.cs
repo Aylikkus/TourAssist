@@ -16,15 +16,13 @@ public partial class TourismDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Attraction> Attractions { get; set; }
-
     public virtual DbSet<City> Cities { get; set; }
 
     public virtual DbSet<Country> Countries { get; set; }
 
     public virtual DbSet<Entry> Entries { get; set; }
 
-    public virtual DbSet<Hotel> Hotels { get; set; }
+    public virtual DbSet<PecularitiesCity> PecularitiesCities { get; set; }
 
     public virtual DbSet<PecularitiesCountry> PecularitiesCountries { get; set; }
 
@@ -44,8 +42,6 @@ public partial class TourismDbContext : DbContext
 
     public virtual DbSet<Usertour> Usertours { get; set; }
 
-    public virtual DbSet<UsertourAttraction> UsertourAttractions { get; set; }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         Configuration configuration = Configuration.GetConfiguration();
@@ -61,24 +57,6 @@ public partial class TourismDbContext : DbContext
             .UseCollation("utf8mb3_general_ci")
             .HasCharSet("utf8mb3");
 
-        modelBuilder.Entity<Attraction>(entity =>
-        {
-            entity.HasKey(e => e.IdAttraction).HasName("PRIMARY");
-
-            entity.ToTable("attraction");
-
-            entity.HasIndex(e => e.CityIdCity, "fk_Attraction_City1_idx");
-
-            entity.Property(e => e.IdAttraction).HasColumnName("idAttraction");
-            entity.Property(e => e.CityIdCity).HasColumnName("City_idCity");
-            entity.Property(e => e.FullName).HasMaxLength(45);
-
-            entity.HasOne(d => d.CityIdCityNavigation).WithMany(p => p.Attractions)
-                .HasForeignKey(d => d.CityIdCity)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_Attraction_City1");
-        });
-
         modelBuilder.Entity<City>(entity =>
         {
             entity.HasKey(e => e.IdCity).HasName("PRIMARY");
@@ -87,9 +65,7 @@ public partial class TourismDbContext : DbContext
 
             entity.HasIndex(e => e.RegionIdRegion, "fk_City_Region1_idx");
 
-            entity.Property(e => e.IdCity)
-                .ValueGeneratedNever()
-                .HasColumnName("idCity");
+            entity.Property(e => e.IdCity).HasColumnName("idCity");
             entity.Property(e => e.FullName).HasMaxLength(45);
             entity.Property(e => e.RegionIdRegion).HasColumnName("Region_idRegion");
 
@@ -121,9 +97,7 @@ public partial class TourismDbContext : DbContext
 
             entity.HasIndex(e => e.UserIdUser, "fk_Entry_User1_idx");
 
-            entity.Property(e => e.IdEntry)
-                .ValueGeneratedNever()
-                .HasColumnName("idEntry");
+            entity.Property(e => e.IdEntry).HasColumnName("idEntry");
             entity.Property(e => e.RouteIdRoute).HasColumnName("Route_idRoute");
             entity.Property(e => e.UserIdUser).HasColumnName("User_idUser");
 
@@ -138,24 +112,29 @@ public partial class TourismDbContext : DbContext
                 .HasConstraintName("fk_Entry_User1");
         });
 
-        modelBuilder.Entity<Hotel>(entity =>
+        modelBuilder.Entity<PecularitiesCity>(entity =>
         {
-            entity.HasKey(e => e.IdHotel).HasName("PRIMARY");
+            entity.HasKey(e => e.IdCityPecularity).HasName("PRIMARY");
 
-            entity.ToTable("hotel");
+            entity.ToTable("pecularities_cities");
 
-            entity.HasIndex(e => e.CityIdCity, "fk_Hotel_City1_idx");
+            entity.HasIndex(e => e.CityIdCity, "fk_Pecularities_Cities_City1_idx");
 
-            entity.Property(e => e.IdHotel)
-                .ValueGeneratedNever()
-                .HasColumnName("idHotel");
+            entity.HasIndex(e => e.PeculiarityIdPeculiarity, "fk_Pecularities_Cities_Peculiarity1_idx");
+
+            entity.Property(e => e.IdCityPecularity).HasColumnName("idCityPecularity");
             entity.Property(e => e.CityIdCity).HasColumnName("City_idCity");
-            entity.Property(e => e.FullName).HasMaxLength(45);
+            entity.Property(e => e.PeculiarityIdPeculiarity).HasColumnName("Peculiarity_idPeculiarity");
 
-            entity.HasOne(d => d.CityIdCityNavigation).WithMany(p => p.Hotels)
+            entity.HasOne(d => d.CityIdCityNavigation).WithMany(p => p.PecularitiesCities)
                 .HasForeignKey(d => d.CityIdCity)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_Hotel_City1");
+                .HasConstraintName("fk_Pecularities_Cities_City1");
+
+            entity.HasOne(d => d.PeculiarityIdPeculiarityNavigation).WithMany(p => p.PecularitiesCities)
+                .HasForeignKey(d => d.PeculiarityIdPeculiarity)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Pecularities_Cities_Peculiarity1");
         });
 
         modelBuilder.Entity<PecularitiesCountry>(entity =>
@@ -216,10 +195,8 @@ public partial class TourismDbContext : DbContext
 
             entity.ToTable("peculiarity");
 
-            entity.Property(e => e.IdPeculiarity)
-                .ValueGeneratedNever()
-                .HasColumnName("idPeculiarity");
-            entity.Property(e => e.Decription).HasColumnType("text");
+            entity.Property(e => e.IdPeculiarity).HasColumnName("idPeculiarity");
+            entity.Property(e => e.Description).HasColumnType("text");
         });
 
         modelBuilder.Entity<Region>(entity =>
@@ -254,9 +231,7 @@ public partial class TourismDbContext : DbContext
 
             entity.HasIndex(e => e.TransportIdTransport, "fk_Route_Transport1_idx");
 
-            entity.Property(e => e.IdRoute)
-                .ValueGeneratedNever()
-                .HasColumnName("idRoute");
+            entity.Property(e => e.IdRoute).HasColumnName("idRoute");
             entity.Property(e => e.Arrival).HasColumnType("datetime");
             entity.Property(e => e.Departure).HasColumnType("datetime");
             entity.Property(e => e.FromIdCity).HasColumnName("From_idCity");
@@ -286,9 +261,7 @@ public partial class TourismDbContext : DbContext
 
             entity.ToTable("transport");
 
-            entity.Property(e => e.IdTransport)
-                .ValueGeneratedNever()
-                .HasColumnName("idTransport");
+            entity.Property(e => e.IdTransport).HasColumnName("idTransport");
             entity.Property(e => e.Name).HasMaxLength(45);
         });
 
@@ -300,13 +273,11 @@ public partial class TourismDbContext : DbContext
 
             entity.HasIndex(e => e.UserRoleIdUserRole, "fk_User_UserRole1_idx");
 
-            entity.Property(e => e.IdUser)
-                .ValueGeneratedNever()
-                .HasColumnName("idUser");
+            entity.Property(e => e.IdUser).HasColumnName("idUser");
             entity.Property(e => e.Login).HasMaxLength(45);
             entity.Property(e => e.Name).HasMaxLength(45);
             entity.Property(e => e.PasswordSha256)
-                .HasMaxLength(32)
+                .HasMaxLength(64)
                 .HasColumnName("PasswordSHA256");
             entity.Property(e => e.Patronymic).HasMaxLength(45);
             entity.Property(e => e.Surname).HasMaxLength(45);
@@ -324,9 +295,7 @@ public partial class TourismDbContext : DbContext
 
             entity.ToTable("userrole");
 
-            entity.Property(e => e.IdUserRole)
-                .ValueGeneratedNever()
-                .HasColumnName("idUserRole");
+            entity.Property(e => e.IdUserRole).HasColumnName("idUserRole");
             entity.Property(e => e.Name).HasMaxLength(45);
         });
 
@@ -340,14 +309,9 @@ public partial class TourismDbContext : DbContext
 
             entity.HasIndex(e => e.DepartureIdEntry, "fk_UserTour_Entry2_idx");
 
-            entity.HasIndex(e => e.HotelIdHotel, "fk_UserTour_Hotel1_idx");
-
-            entity.Property(e => e.IdUserTour)
-                .ValueGeneratedNever()
-                .HasColumnName("idUserTour");
+            entity.Property(e => e.IdUserTour).HasColumnName("idUserTour");
             entity.Property(e => e.ArrivalIdEntry).HasColumnName("Arrival_idEntry");
             entity.Property(e => e.DepartureIdEntry).HasColumnName("Departure_idEntry");
-            entity.Property(e => e.HotelIdHotel).HasColumnName("Hotel_idHotel");
 
             entity.HasOne(d => d.ArrivalIdEntryNavigation).WithMany(p => p.UsertourArrivalIdEntryNavigations)
                 .HasForeignKey(d => d.ArrivalIdEntry)
@@ -358,38 +322,6 @@ public partial class TourismDbContext : DbContext
                 .HasForeignKey(d => d.DepartureIdEntry)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_UserTour_Entry2");
-
-            entity.HasOne(d => d.HotelIdHotelNavigation).WithMany(p => p.Usertours)
-                .HasForeignKey(d => d.HotelIdHotel)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_UserTour_Hotel1");
-        });
-
-        modelBuilder.Entity<UsertourAttraction>(entity =>
-        {
-            entity.HasKey(e => e.IdUserTourAttraction).HasName("PRIMARY");
-
-            entity.ToTable("usertour_attraction");
-
-            entity.HasIndex(e => e.AttractionIdAttraction, "fk_UserTour_Attraction_Attraction1_idx");
-
-            entity.HasIndex(e => e.UserTourIdUserTour, "fk_UserTour_Attraction_UserTour1_idx");
-
-            entity.Property(e => e.IdUserTourAttraction)
-                .ValueGeneratedNever()
-                .HasColumnName("idUserTour_Attraction");
-            entity.Property(e => e.AttractionIdAttraction).HasColumnName("Attraction_idAttraction");
-            entity.Property(e => e.UserTourIdUserTour).HasColumnName("UserTour_idUserTour");
-
-            entity.HasOne(d => d.AttractionIdAttractionNavigation).WithMany(p => p.UsertourAttractions)
-                .HasForeignKey(d => d.AttractionIdAttraction)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_UserTour_Attraction_Attraction1");
-
-            entity.HasOne(d => d.UserTourIdUserTourNavigation).WithMany(p => p.UsertourAttractions)
-                .HasForeignKey(d => d.UserTourIdUserTour)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_UserTour_Attraction_UserTour1");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -11,9 +11,7 @@ public partial class City
 
     public int RegionIdRegion { get; set; }
 
-    public virtual ICollection<Attraction> Attractions { get; set; } = new List<Attraction>();
-
-    public virtual ICollection<Hotel> Hotels { get; set; } = new List<Hotel>();
+    public virtual ICollection<PecularitiesCity> PecularitiesCities { get; set; } = new List<PecularitiesCity>();
 
     public virtual Region RegionIdRegionNavigation { get; set; } = null!;
 

@@ -9,5 +9,7 @@ public partial class Transport
 
     public string Name { get; set; } = null!;
 
+    public int Capacity { get; set; }
+
     public virtual ICollection<Route> Routes { get; set; } = new List<Route>();
 }

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
 using TourAssist.Model;
 using TourAssist.Model.Scaffold;
 using TourAssist.View;
@@ -15,6 +16,7 @@ namespace TourAssist.ViewModel
         private string name = null!;
         private string surname = null!;
         private bool rememberMe = false;
+        private DateOnly dateOfBirth = DateOnly.FromDateTime(DateTime.Now);
 
         public string Login
         { 
@@ -66,6 +68,28 @@ namespace TourAssist.ViewModel
             }
         }
 
+        public DateOnly DateOfBirth
+        {
+            get { return dateOfBirth; }
+            set
+            {
+                dateOfBirth = value;
+                OnPropertyChanged(nameof(DateOfBirth));
+                OnPropertyChanged(nameof(DateTimeOfBirth));
+            }
+        }
+
+        public DateTime DateTimeOfBirth
+        {
+            get { return dateOfBirth.ToDateTime(new TimeOnly()); }
+            set
+            {
+                dateOfBirth = DateOnly.FromDateTime(value);
+                OnPropertyChanged(nameof(DateOfBirth));
+                OnPropertyChanged(nameof(DateTimeOfBirth));
+            }
+        }
+
         private RelayCommand? openRegistration;
         public RelayCommand OpenRegistration
         {
@@ -91,13 +115,13 @@ namespace TourAssist.ViewModel
                         return;
                     }
 
-                    if (AuthManager.Register(Login, Password, Name, Surname))
+                    if (AuthManager.Register(Login, Password, Name, Surname, DateOfBirth))
                     {
                         PopupService.ShowMessage("Регистрация успешно пройдена.");
                     }
                     else
                     {
-                        PopupService.ShowMessage("Такой логин уже существует.");
+                        PopupService.ShowMessage("Такой логин уже существует или вам нет 18-и лет.");
                     }
                 });
             }
