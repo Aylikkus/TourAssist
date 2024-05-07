@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using TourAssist.ViewModel;
+using TourAssist.ViewModel.Utility;
 
 namespace TourAssist.View
 {
@@ -24,6 +25,18 @@ namespace TourAssist.View
         {
             InitializeComponent();
             DataContext = new AdminViewModel();
+        }
+
+        private void countriesBtn_Click(object sender, RoutedEventArgs e)
+        {
+            countriesGrid.Visibility = Visibility.Visible;
+            regionsGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void regionsBtn_Click(object sender, RoutedEventArgs e)
+        {
+            countriesGrid.Visibility= Visibility.Collapsed;
+            regionsGrid.Visibility= Visibility.Visible;
         }
     }
 }

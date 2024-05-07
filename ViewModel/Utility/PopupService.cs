@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using TourAssist.Model.Scaffold;
 using TourAssist.View;
 
 namespace TourAssist.ViewModel.Utility
@@ -26,6 +27,20 @@ namespace TourAssist.ViewModel.Utility
         public static void ShowMessage(string message)
         {
             MessageBox.Show(message);
+        }
+
+        public static Country? SelectCountry()
+        {
+            SelectCountryDialog dialog = new SelectCountryDialog();
+            bool? result = dialog.ShowDialog();
+            if (result.GetValueOrDefault())
+            {
+                return dialog.Selected;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
