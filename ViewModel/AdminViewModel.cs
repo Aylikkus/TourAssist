@@ -15,8 +15,6 @@ namespace TourAssist.ViewModel
     {
         private Country selectedCountry;
 
-        public TourismDbContext DbContext { get; private set; }
-
         public Country SelectedCountry
         {
             get { return selectedCountry; }
@@ -29,24 +27,24 @@ namespace TourAssist.ViewModel
 
         public ObservableCollection<Country> Countries { get; private set; }
 
-        private RelayCommand? save;
-        public RelayCommand Save
+        private void doContextAction(Action action)
         {
-            get
+            try
             {
-                return save ??= new RelayCommand(obj =>
+                using (TourismDbContext dbContext = new TourismDbContext()) 
                 {
-                    try
-                    {
-                        DbContext.SaveChanges();
-                    }
-                    catch (Exception ex)
-                    {
-                        PopupService.ShowMessage("Произошла ошибка при изменении элементов." +
-                            "Убедитесь, что все поля проставлены в правильном формате." +
-                            "Ошибка: " + ex.Message);
-                    }
-                });
+                    action();
+                    dbContext.SaveChanges();
+
+                    // Обновление списков
+                    Countries = new ObservableCollection<Country>(dbContext.Countries.ToList());
+                }
+            }
+            catch (Exception ex)
+            {
+                PopupService.ShowMessage("Произошла ошибка при изменении элементов." +
+                    "Убедитесь, что все поля проставлены в правильном формате." +
+                    "Ошибка: " + ex.Message);
             }
         }
 
@@ -58,7 +56,7 @@ namespace TourAssist.ViewModel
                 return addCountry ??= new RelayCommand(obj =>
                 {
                     DbContext.Countries.Add(SelectedCountry);
-                    fetchDb();
+                    
                 });
             }
         }
@@ -70,21 +68,9 @@ namespace TourAssist.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        private void fetchDb()
-        {
-            Countries = new ObservableCollection<Country>(DbContext.Countries.ToList());
-        }
-
         public AdminViewModel() 
         {
-            DbContext = new TourismDbContext();
             SelectedCountry = new Country();
-            fetchDb();
-        }
-
-        ~AdminViewModel()
-        {
-            DbContext.Dispose();
         }
     }
 }
