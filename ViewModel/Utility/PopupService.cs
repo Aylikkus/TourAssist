@@ -75,5 +75,15 @@ namespace TourAssist.ViewModel.Utility
         {
             return GetDialogResult(new SelectPeculiarityDialog(city));
         }
+
+        internal static Transport? SelectTransport()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static City? SelectCity()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

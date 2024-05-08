@@ -649,6 +649,143 @@ namespace TourAssist.ViewModel
 
         #endregion
 
+        #region Маршруты
+
+        private Route selectedRoute;
+
+        public Route SelectedRoute
+        {
+            get
+            {
+                if (selectedRoute == null)
+                {
+                    selectedRoute = new Route();
+                    OnPropertyChanged(nameof(SelectedRoute));
+                    OnPropertyChanged(nameof(SelectedRoute.FromIdCityNavigation));
+                    OnPropertyChanged(nameof(SelectedRoute.ToIdCityNavigation));
+                }
+
+                return selectedRoute;
+            }
+            set
+            {
+                selectedRoute = value;
+                OnPropertyChanged(nameof(SelectedRoute));
+                OnPropertyChanged(nameof(SelectedRoute.FromIdCityNavigation));
+                OnPropertyChanged(nameof(SelectedRoute.ToIdCityNavigation));
+            }
+        }
+
+        private ObservableCollection<Route> routes;
+
+        public ObservableCollection<Route> Routes
+        {
+            get { return routes; }
+            private set
+            {
+                routes = value;
+                OnPropertyChanged(nameof(Routes));
+            }
+        }
+
+        private RelayCommand? addRoute;
+        public RelayCommand AddRoute
+        {
+            get
+            {
+                return addCity ??= new RelayCommand(obj =>
+                {
+                    doContextAction(dbContext => dbContext.Routes.Add(
+                        new Route
+                        {
+                            FromIdCity = SelectedRoute.FromIdCity,
+                            ToIdCity = SelectedRoute.ToIdCity,
+                            Departure = SelectedRoute.Departure,
+                            Arrival = SelectedRoute.Arrival,
+                            Price = SelectedRoute.Price,
+                            TransportIdTransport = SelectedRoute.TransportIdTransport
+                        }));
+                });
+            }
+        }
+
+        private RelayCommand? updateRoute;
+        public RelayCommand UpdateRoute
+        {
+            get
+            {
+                return updateRoute ??= new RelayCommand(obj =>
+                {
+                    doContextAction(dbContext => dbContext.Routes.Update(SelectedRoute));
+                });
+            }
+        }
+
+        private RelayCommand? removeRoute;
+        public RelayCommand RemoveRoute
+        {
+            get
+            {
+                return removeRoute ??= new RelayCommand(obj =>
+                {
+                    doContextAction(dbContext => dbContext.Routes.Remove(SelectedRoute));
+                });
+            }
+        }
+
+        private RelayCommand? selectToCity;
+        public RelayCommand SelectToCity
+        {
+            get
+            {
+                return selectToCity ??= new RelayCommand(obj =>
+                {
+                    City? city = PopupService.SelectCity();
+                    if (city != null)
+                    {
+                        SelectedRoute.ToIdCity = city.IdCity;
+                        OnPropertyChanged(nameof(SelectedRoute.ToIdCityNavigation));
+                    }
+                });
+            }
+        }
+
+        private RelayCommand? selectFromCity;
+        public RelayCommand SelectFromCity
+        {
+            get
+            {
+                return selectFromCity ??= new RelayCommand(obj =>
+                {
+                    City? city = PopupService.SelectCity();
+                    if (city != null)
+                    {
+                        SelectedRoute.FromIdCity = city.IdCity;
+                        OnPropertyChanged(nameof(SelectedRoute.FromIdCityNavigation));
+                    }
+                });
+            }
+        }
+
+        private RelayCommand? selectTransport;
+        public RelayCommand SelectTransport
+        {
+            get
+            {
+                return selectTransport ??= new RelayCommand(obj =>
+                {
+                    Transport? transport = PopupService.SelectTransport();
+                    if (transport != null)
+                    {
+                        SelectedRoute.TransportIdTransport = transport.IdTransport;
+                        OnPropertyChanged(nameof(SelectedRoute.TransportIdTransportNavigation));
+                    }
+                });
+            }
+        }
+
+        #endregion
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")

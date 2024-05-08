@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TourAssist.View"
+        xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="AdminScreen" Height="450" Width="800">
     <Grid>
@@ -180,12 +181,51 @@
             </StackPanel>
         </Grid>
 
+        <Grid Visibility="Collapsed" x:Name="routesGrid" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <ListBox ItemsSource="{Binding Routes}"
+SelectedItem="{Binding SelectedRoute}" Grid.RowSpan="2">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding FromIdCityNavigation.FullName}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <StackPanel Grid.Column="1">
+                <TextBlock>Из</TextBlock>
+                <Label Content="{Binding SelectedRoute.FromIdCityNavigation.FullName}"/>
+                <TextBlock>Куда</TextBlock>
+                <Label Content="{Binding SelectedRoute.ToIdCityNavigation.FullName}"/>
+                <TextBlock>Отбытие</TextBlock>
+                <xceed:DateTimePicker></xceed:DateTimePicker>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="1">
+                <Button Content="Добавить" Command="{Binding AddPeculiarity}"/>
+                <Button Content="Обновить" Command="{Binding UpdatePeculiarity}"/>
+                <Button Content="Удалить" Command="{Binding RemovePeculiarity}"/>
+            </StackPanel>
+        </Grid>
+
         <StackPanel Grid.Column="3" Grid.RowSpan="4">
             <TextBlock>Редактирование</TextBlock>
             <Button x:Name="countriesBtn" Content="Страны" Click="countriesBtn_Click"/>
             <Button x:Name="regionsBtn" Content="Регионы" Click="regionsBtn_Click"/>
             <Button x:Name="citiesBtn" Content="Города" Click="citiesBtn_Click"/>
             <Button x:Name="peculiaritiesBtn" Content="Особенности" Click="peculiaritiesBtn_Click"/>
+            <Button x:Name="routesBtn" Content="Маршруты" Click="routesBtn_Click"/>
         </StackPanel>
 
     </Grid>
