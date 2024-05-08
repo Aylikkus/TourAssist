@@ -43,17 +43,21 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <StackPanel Grid.Column="1" DataContext="{Binding SelectedCountry}">
+            <StackPanel Grid.Column="1">
                 <TextBlock>Код ISO31661</TextBlock>
-                <TextBox Text="{Binding Iso31661, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding SelectedCountry.Iso31661}"/>
                 <TextBlock>Полное имя</TextBlock>
-                <TextBox Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding SelectedCountry.FullName}"/>
+                <TextBlock>Особенности</TextBlock>
+                <Label Content="{Binding SelectedCountryPeculiarities}"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="1">
                 <Button Content="Добавить" Command="{Binding AddCountry}"/>
                 <Button Content="Обновить" Command="{Binding UpdateCountry}"/>
                 <Button Content="Удалить" Command="{Binding RemoveCountry}"/>
+                <Button Content="Добавить особенность..." Command="{Binding AddCountryPeculiarity}"/>
+                <Button Content="Удалить особенность..." Command="{Binding RemoveCountryPeculiarity}"/>
             </StackPanel>
         </Grid>
 
@@ -82,16 +86,97 @@
 
             <StackPanel Grid.Column="1">
                 <TextBlock>Название</TextBlock>
-                <TextBox Text="{Binding SelectedRegion.FullName, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding SelectedRegion.FullName}"/>
                 <TextBlock>Страна</TextBlock>
-                <Label Content="{Binding SelectedRegionCountry, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="{Binding SelectedRegionCountry}"/>
+                <TextBlock>Особенности</TextBlock>
+                <Label Content="{Binding SelectedRegionPeculiarities}"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="1">
                 <Button Content="Добавить" Command="{Binding AddRegion}"/>
                 <Button Content="Обновить" Command="{Binding UpdateRegion}"/>
                 <Button Content="Удалить" Command="{Binding RemoveRegion}"/>
-                <Button Content="Выбрать страну" Command="{Binding SelectCountry}"/>
+                <Button Content="Выбрать страну..." Command="{Binding SelectCountry}"/>
+                <Button Content="Добавить особенность..." Command="{Binding AddRegionPeculiarity}"/>
+                <Button Content="Удалить особенность..." Command="{Binding RemoveRegionPeculiarity}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Visibility="Collapsed" x:Name="citiesGrid" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <ListBox ItemsSource="{Binding Cities}"
+                SelectedItem="{Binding SelectedCity}" Grid.RowSpan="2">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock FontSize="18" Text="{Binding FullName}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <StackPanel Grid.Column="1">
+                <TextBlock>Название</TextBlock>
+                <TextBox Text="{Binding SelectedCity.FullName}"/>
+                <TextBlock>Регион</TextBlock>
+                <Label Content="{Binding SelectedCityRegion}"/>
+                <TextBlock>Страна</TextBlock>
+                <Label Content="{Binding SelectedCityCountry}"/>
+                <TextBlock>Особенности</TextBlock>
+                <Label Content="{Binding SelectedCityPeculiarities}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="1">
+                <Button Content="Добавить" Command="{Binding AddCity}"/>
+                <Button Content="Обновить" Command="{Binding UpdateCity}"/>
+                <Button Content="Удалить" Command="{Binding RemoveCity}"/>
+                <Button Content="Выбрать регион..." Command="{Binding SelectRegion}"/>
+                <Button Content="Добавить особенность..." Command="{Binding AddCityPeculiarity}"/>
+                <Button Content="Удалить особенность..." Command="{Binding RemoveCityPeculiarity}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Visibility="Collapsed" x:Name="peculiaritiesGrid" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <ListBox ItemsSource="{Binding Peculiarities}"
+        SelectedItem="{Binding SelectedPeculiarity}" Grid.RowSpan="2">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Description}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <StackPanel Grid.Column="1">
+                <TextBlock>Описание</TextBlock>
+                <TextBox Text="{Binding SelectedPeculiarity.Description}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="1">
+                <Button Content="Добавить" Command="{Binding AddPeculiarity}"/>
+                <Button Content="Обновить" Command="{Binding UpdatePeculiarity}"/>
+                <Button Content="Удалить" Command="{Binding RemovePeculiarity}"/>
             </StackPanel>
         </Grid>
 
@@ -99,8 +184,8 @@
             <TextBlock>Редактирование</TextBlock>
             <Button x:Name="countriesBtn" Content="Страны" Click="countriesBtn_Click"/>
             <Button x:Name="regionsBtn" Content="Регионы" Click="regionsBtn_Click"/>
-            <Button x:Name="citiesBtn" Content="Города"/>
-            <Button x:Name="peculiaritiesBtn" Content="Особенности"/>
+            <Button x:Name="citiesBtn" Content="Города" Click="citiesBtn_Click"/>
+            <Button x:Name="peculiaritiesBtn" Content="Особенности" Click="peculiaritiesBtn_Click"/>
         </StackPanel>
 
     </Grid>

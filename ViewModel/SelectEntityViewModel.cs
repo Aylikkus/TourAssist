@@ -122,6 +122,39 @@ namespace TourAssist.ViewModel
             }
         }
 
+        public void FetchPeculiaritiesCountry(Country country)
+        {
+            using (TourismDbContext dbContext = new TourismDbContext())
+            {
+                var joins = new ObservableCollection<PecularitiesCountry>(dbContext.PecularitiesCountries
+                    .Where(pc => pc.CountryIso31661 == country.Iso31661));
+                Peculiarities = new ObservableCollection<Peculiarity>(dbContext.Peculiarities.ToList()
+                    .Where(p => joins.Where(j => j.PeculiarityIdPeculiarity == p.IdPeculiarity).Count() > 0));
+            }
+        }
+
+        public void FetchPeculiaritiesRegion(Region region)
+        {
+            using (TourismDbContext dbContext = new TourismDbContext())
+            {
+                var joins = new ObservableCollection<PecularitiesRegion>(dbContext.PecularitiesRegions
+                    .Where(pc => pc.RegionIdRegion == region.IdRegion));
+                Peculiarities = new ObservableCollection<Peculiarity>(dbContext.Peculiarities.ToList()
+                    .Where(p => joins.Where(j => j.PeculiarityIdPeculiarity == p.IdPeculiarity).Count() > 0));
+            }
+        }
+
+        public void FetchPeculiaritiesCity(City city)
+        {
+            using (TourismDbContext dbContext = new TourismDbContext())
+            {
+                var joins = new ObservableCollection<PecularitiesCity>(dbContext.PecularitiesCities
+                    .Where(pc => pc.CityIdCity == city.IdCity));
+                Peculiarities = new ObservableCollection<Peculiarity>(dbContext.Peculiarities.ToList()
+                    .Where(p => joins.Where(j => j.PeculiarityIdPeculiarity == p.IdPeculiarity).Count() > 0));
+            }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")

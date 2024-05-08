@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -21,6 +22,8 @@ namespace TourAssist.ViewModel
             {
                 Countries = new ObservableCollection<Country>(dbContext.Countries.ToList());
                 Regions = new ObservableCollection<Region>(dbContext.Regions.ToList());
+                Cities = new ObservableCollection<City>(dbContext.Cities.ToList());
+                Peculiarities = new ObservableCollection<Peculiarity>(dbContext.Peculiarities.ToList());
             }
         }
 
@@ -55,6 +58,7 @@ namespace TourAssist.ViewModel
                 {
                     selectedCountry = new Country();
                     OnPropertyChanged(nameof(SelectedCountry));
+                    OnPropertyChanged(nameof(SelectedCountryPeculiarities));
                 }
 
                 return selectedCountry;
@@ -63,6 +67,28 @@ namespace TourAssist.ViewModel
             {
                 selectedCountry = value;
                 OnPropertyChanged(nameof(SelectedCountry));
+                OnPropertyChanged(nameof(SelectedCountryPeculiarities));
+            }
+        }
+
+        public string SelectedCountryPeculiarities
+        {
+            get
+            {
+                using (TourismDbContext dbContext = new TourismDbContext())
+                {
+                    var joins = new ObservableCollection<PecularitiesCountry>(dbContext.PecularitiesCountries
+                        .Where(pc => pc.CountryIso31661 == SelectedCountry.Iso31661));
+                    var pecs = new ObservableCollection<Peculiarity>(dbContext.Peculiarities.ToList()
+                        .Where(p => joins.Where(j => j.PeculiarityIdPeculiarity == p.IdPeculiarity).Count() > 0));
+                    StringBuilder sb = new StringBuilder();
+                    foreach (var p in pecs)
+                    {
+                        sb.Append(p.Description + ", ");
+                    }
+                    sb.Remove(sb.Length - 2, 2);
+                    return sb.ToString();
+                }
             }
         }
 
@@ -85,7 +111,12 @@ namespace TourAssist.ViewModel
             {
                 return addCountry ??= new RelayCommand(obj =>
                 {
-                    doContextAction(dbContext => dbContext.Countries.Add(SelectedCountry));
+                    doContextAction(dbContext => dbContext.Countries.Add(
+                        new Country()
+                        {
+                            Iso31661 = SelectedCountry.Iso31661,
+                            FullName = SelectedCountry.FullName
+                        }));
                 });
             }
         }
@@ -113,6 +144,53 @@ namespace TourAssist.ViewModel
                 });
             }
         }
+
+        private RelayCommand? addCountryPeculiarity;
+        public RelayCommand AddCountryPeculiarity
+        {
+            get
+            {
+                return addCountryPeculiarity ??= new RelayCommand(obj =>
+                {
+                    Peculiarity? peculiarity = PopupService.SelectPeculiarity();
+
+                    if (peculiarity == null) return;
+
+                    doContextAction(dbContext => dbContext.PecularitiesCountries.Add(
+                        new PecularitiesCountry()
+                        {
+                            CountryIso31661 = SelectedCountry.Iso31661,
+                            PeculiarityIdPeculiarity = peculiarity.IdPeculiarity
+                        }));
+                    OnPropertyChanged(nameof(SelectedCountryPeculiarities));
+                });
+            }
+        }
+
+        private RelayCommand? removeCountryPeculiarity;
+        public RelayCommand RemoveCountryPeculiarity
+        {
+            get
+            {
+                return removeCountryPeculiarity ??= new RelayCommand(obj =>
+                {
+                    Peculiarity? peculiarity = PopupService.SelectPeculiarityFor(SelectedCountry);
+
+                    if (peculiarity == null) return;
+
+                    doContextAction(dbContext => 
+                    {
+                        var join = new ObservableCollection<PecularitiesCountry>(dbContext.PecularitiesCountries
+                            .Where(pc => pc.PeculiarityIdPeculiarity == peculiarity.IdPeculiarity &&
+                                pc.CountryIso31661 == SelectedCountry.Iso31661)).FirstOrDefault();
+
+                        if (join != null)
+                            dbContext.Remove(join);
+                    });
+                    OnPropertyChanged(nameof(SelectedCountryPeculiarities));
+                });
+            }
+        }
         #endregion
 
         #region Регионы
@@ -127,6 +205,8 @@ namespace TourAssist.ViewModel
                 {
                     selectedRegion = new Region();
                     OnPropertyChanged(nameof(SelectedRegion));
+                    OnPropertyChanged(nameof(SelectedRegionCountry));
+                    OnPropertyChanged(nameof(SelectedRegionPeculiarities));
                 }
 
                 return selectedRegion;
@@ -136,6 +216,7 @@ namespace TourAssist.ViewModel
                 selectedRegion = value;
                 OnPropertyChanged(nameof(SelectedRegion));
                 OnPropertyChanged(nameof(SelectedRegionCountry));
+                OnPropertyChanged(nameof(SelectedRegionPeculiarities));
             }
         }
 
@@ -148,6 +229,27 @@ namespace TourAssist.ViewModel
                     return dbContext.Countries
                         .FirstOrDefault(c => c.Iso31661 == SelectedRegion.CountryIso31661)
                         ?.FullName;
+                }
+            }
+        }
+
+        public string SelectedRegionPeculiarities
+        {
+            get
+            {
+                using (TourismDbContext dbContext = new TourismDbContext())
+                {
+                    var joins = new ObservableCollection<PecularitiesRegion>(dbContext.PecularitiesRegions
+                        .Where(pc => pc.RegionIdRegion == SelectedRegion.IdRegion));
+                    var pecs = new ObservableCollection<Peculiarity>(dbContext.Peculiarities.ToList()
+                        .Where(p => joins.Where(j => j.PeculiarityIdPeculiarity == p.IdPeculiarity).Count() > 0));
+                    StringBuilder sb = new StringBuilder();
+                    foreach (var p in pecs)
+                    {
+                        sb.Append(p.Description + ", ");
+                    }
+                    sb.Remove(sb.Length - 2, 2);
+                    return sb.ToString();
                 }
             }
         }
@@ -220,6 +322,331 @@ namespace TourAssist.ViewModel
             }
         }
 
+        private RelayCommand? addRegionPeculiarity;
+        public RelayCommand AddRegionPeculiarity
+        {
+            get
+            {
+                return addRegionPeculiarity ??= new RelayCommand(obj =>
+                {
+                    Peculiarity? peculiarity = PopupService.SelectPeculiarity();
+
+                    if (peculiarity == null) return;
+
+                    doContextAction(dbContext => dbContext.PecularitiesRegions.Add(
+                        new PecularitiesRegion()
+                        {
+                            RegionIdRegion = SelectedRegion.IdRegion,
+                            PeculiarityIdPeculiarity = peculiarity.IdPeculiarity
+                        }));
+                    OnPropertyChanged(nameof(SelectedRegionPeculiarities));
+                });
+            }
+        }
+
+        private RelayCommand? removeRegionPeculiarity;
+        public RelayCommand RemoveRegionPeculiarity
+        {
+            get
+            {
+                return removeRegionPeculiarity ??= new RelayCommand(obj =>
+                {
+                    Peculiarity? peculiarity = PopupService.SelectPeculiarityFor(SelectedRegion);
+
+                    if (peculiarity == null) return;
+
+                    doContextAction(dbContext =>
+                    {
+                        var join = new ObservableCollection<PecularitiesRegion>(dbContext.PecularitiesRegions
+                            .Where(pc => pc.PeculiarityIdPeculiarity == peculiarity.IdPeculiarity &&
+                                pc.RegionIdRegion == SelectedRegion.IdRegion)).FirstOrDefault();
+
+                        if (join != null)
+                            dbContext.Remove(join);
+                    });
+                    OnPropertyChanged(nameof(SelectedRegionPeculiarities));
+                });
+            }
+        }
+
+        #endregion
+
+        #region Города
+
+        private City selectedCity;
+
+        public City SelectedCity
+        {
+            get
+            {
+                if (selectedCity == null)
+                {
+                    selectedCity = new City();
+                    OnPropertyChanged(nameof(SelectedCity));
+                    OnPropertyChanged(nameof(SelectedCityCountry));
+                    OnPropertyChanged(nameof(SelectedCityRegion));
+                    OnPropertyChanged(nameof(SelectedCityPeculiarities));
+                }
+
+                return selectedCity;
+            }
+            set
+            {
+                selectedCity = value;
+                OnPropertyChanged(nameof(SelectedCity));
+                OnPropertyChanged(nameof(SelectedCityCountry));
+                OnPropertyChanged(nameof(SelectedCityRegion));
+                OnPropertyChanged(nameof(SelectedCityPeculiarities));
+            }
+        }
+
+        public string? SelectedCityCountry
+        {
+            get
+            {
+                using (TourismDbContext dbContext = new TourismDbContext())
+                {
+                    Region? region = dbContext.Regions.FirstOrDefault(
+                        r => r.IdRegion == SelectedCity.RegionIdRegion);
+
+                    if (region == null) return null;
+
+                    return dbContext.Countries
+                        .FirstOrDefault(c => c.Iso31661 == region.CountryIso31661)
+                        ?.FullName;
+                }
+            }
+        }
+
+        public string? SelectedCityRegion
+        {
+            get
+            {
+                using (TourismDbContext dbContext = new TourismDbContext())
+                {
+                    return dbContext.Regions
+                        .FirstOrDefault(r => r.IdRegion == SelectedCity.RegionIdRegion)
+                        ?.FullName;
+                }
+            }
+        }
+
+        public string SelectedCityPeculiarities
+        {
+            get
+            {
+                using (TourismDbContext dbContext = new TourismDbContext())
+                {
+                    var joins = new ObservableCollection<PecularitiesCity>(dbContext.PecularitiesCities
+                        .Where(pc => pc.CityIdCity == SelectedCity.IdCity));
+                    var pecs = new ObservableCollection<Peculiarity>(dbContext.Peculiarities.ToList()
+                        .Where(p => joins.Where(j => j.PeculiarityIdPeculiarity == p.IdPeculiarity).Count() > 0));
+                    StringBuilder sb = new StringBuilder();
+                    foreach (var p in pecs)
+                    {
+                        sb.Append(p.Description + ", ");
+                    }
+                    sb.Remove(sb.Length - 2, 2);
+                    return sb.ToString();
+                }
+            }
+        }
+
+        private ObservableCollection<City> cities;
+
+        public ObservableCollection<City> Cities
+        {
+            get { return cities; }
+            private set
+            {
+                cities = value;
+                OnPropertyChanged(nameof(Cities));
+            }
+        }
+
+        private RelayCommand? addCity;
+        public RelayCommand AddCity
+        {
+            get
+            {
+                return addCity ??= new RelayCommand(obj =>
+                {
+                    doContextAction(dbContext => dbContext.Cities.Add(
+                        new City
+                        {
+                            FullName = SelectedCity.FullName,
+                            RegionIdRegion = SelectedCity.RegionIdRegion
+                        }));
+                });
+            }
+        }
+
+        private RelayCommand? updateCity;
+        public RelayCommand UpdateCity
+        {
+            get
+            {
+                return updateCity ??= new RelayCommand(obj =>
+                {
+                    doContextAction(dbContext => dbContext.Cities.Update(SelectedCity));
+                });
+            }
+        }
+
+        private RelayCommand? removeCity;
+        public RelayCommand RemoveCity
+        {
+            get
+            {
+                return removeCity ??= new RelayCommand(obj =>
+                {
+                    doContextAction(dbContext => dbContext.Cities.Remove(SelectedCity));
+                });
+            }
+        }
+
+        private RelayCommand? selectRegion;
+        public RelayCommand SelectRegion
+        {
+            get
+            {
+                return selectRegion ??= new RelayCommand(obj =>
+                {
+                    Region? region = PopupService.SelectRegion();
+                    if (region != null)
+                    {
+                        SelectedCity.RegionIdRegion = region.IdRegion;
+                        OnPropertyChanged(nameof(SelectedCityCountry));
+                        OnPropertyChanged(nameof(SelectedCityRegion));
+                    }
+                });
+            }
+        }
+
+        private RelayCommand? addCityPeculiarity;
+        public RelayCommand AddCityPeculiarity
+        {
+            get
+            {
+                return addCityPeculiarity ??= new RelayCommand(obj =>
+                {
+                    Peculiarity? peculiarity = PopupService.SelectPeculiarity();
+
+                    if (peculiarity == null) return;
+
+                    doContextAction(dbContext => dbContext.PecularitiesCities.Add(
+                        new PecularitiesCity()
+                        {
+                            CityIdCity = SelectedCity.IdCity,
+                            PeculiarityIdPeculiarity = peculiarity.IdPeculiarity
+                        }));
+                    OnPropertyChanged(nameof(SelectedCityPeculiarities));
+                });
+            }
+        }
+
+        private RelayCommand? removeCityPeculiarity;
+        public RelayCommand RemoveCityPeculiarity
+        {
+            get
+            {
+                return removeCityPeculiarity ??= new RelayCommand(obj =>
+                {
+                    Peculiarity? peculiarity = PopupService.SelectPeculiarityFor(SelectedCity);
+
+                    if (peculiarity == null) return;
+
+                    doContextAction(dbContext =>
+                    {
+                        var join = new ObservableCollection<PecularitiesCity>(dbContext.PecularitiesCities
+                            .Where(pc => pc.PeculiarityIdPeculiarity == peculiarity.IdPeculiarity &&
+                                pc.CityIdCity == SelectedCity.IdCity)).FirstOrDefault();
+
+                        if (join != null)
+                            dbContext.Remove(join);
+                    });
+                    OnPropertyChanged(nameof(SelectedCityPeculiarities));
+                });
+            }
+        }
+
+        #endregion
+
+        #region Особенности
+
+        private Peculiarity selectedPeculiarity;
+
+        public Peculiarity SelectedPeculiarity
+        {
+            get
+            {
+                if (selectedPeculiarity == null)
+                {
+                    selectedPeculiarity = new Peculiarity();
+                    OnPropertyChanged(nameof(SelectedPeculiarity));
+                }
+
+                return selectedPeculiarity;
+            }
+            set
+            {
+                selectedPeculiarity = value;
+                OnPropertyChanged(nameof(SelectedPeculiarity));
+            }
+        }
+
+        private ObservableCollection<Peculiarity> peculiarities;
+
+        public ObservableCollection<Peculiarity> Peculiarities
+        {
+            get { return peculiarities; }
+            private set
+            {
+                peculiarities = value;
+                OnPropertyChanged(nameof(Peculiarities));
+            }
+        }
+
+        private RelayCommand? addPeculiarity;
+        public RelayCommand AddPeculiarity
+        {
+            get
+            {
+                return addPeculiarity ??= new RelayCommand(obj =>
+                {
+                    doContextAction(dbContext => dbContext.Peculiarities.Add(
+                        new Peculiarity
+                        {
+                            Description = SelectedPeculiarity.Description
+                        }));
+                });
+            }
+        }
+
+        private RelayCommand? updatePeculiarity;
+        public RelayCommand UpdatePeculiarity
+        {
+            get
+            {
+                return updatePeculiarity ??= new RelayCommand(obj =>
+                {
+                    doContextAction(dbContext => dbContext.Peculiarities.Update(SelectedPeculiarity));
+                });
+            }
+        }
+
+        private RelayCommand? removePeculiarity;
+        public RelayCommand RemovePeculiarity
+        {
+            get
+            {
+                return removePeculiarity ??= new RelayCommand(obj =>
+                {
+                    doContextAction(dbContext => dbContext.Peculiarities.Remove(SelectedPeculiarity));
+                });
+            }
+        }
+
         #endregion
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -231,8 +658,6 @@ namespace TourAssist.ViewModel
 
         public AdminViewModel() 
         {
-            selectedCountry = new Country();
-            countries = new ObservableCollection<Country>();
             fetchDb();
         }
     }

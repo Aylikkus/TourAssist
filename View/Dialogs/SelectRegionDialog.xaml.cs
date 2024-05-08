@@ -14,22 +14,22 @@ using System.Windows.Shapes;
 using TourAssist.Model.Scaffold;
 using TourAssist.ViewModel;
 
-namespace TourAssist.View
+namespace TourAssist.View.Dialogs
 {
     /// <summary>
     /// Логика взаимодействия для SelectEntityDialog.xaml
     /// </summary>
-    public partial class SelectCountryDialog : Window
+    public partial class SelectRegionDialog : Window, IDialogView<Region>
     {
         SelectEntityViewModel viewModel = new SelectEntityViewModel();
-        public SelectCountryDialog()
+        public SelectRegionDialog()
         {
             InitializeComponent();
-            viewModel.Fetch(true, false, false, false);
+            viewModel.Fetch(false, true, false, false);
             DataContext = viewModel;
         }
 
-        public Country? Selected { get => viewModel.SelectedCountry; }
+        public Region? Selected { get => viewModel.SelectedRegion; }
 
         private void okButton_Click(object sender, RoutedEventArgs e)
         {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using TourAssist.Model.Scaffold;
 using TourAssist.View;
+using TourAssist.View.Dialogs;
 
 namespace TourAssist.ViewModel.Utility
 {
@@ -29,10 +30,12 @@ namespace TourAssist.ViewModel.Utility
             MessageBox.Show(message);
         }
 
-        public static Country? SelectCountry()
+        public static T? GetDialogResult<T>(IDialogView<T> dialog)
+            where T : class
         {
-            SelectCountryDialog dialog = new SelectCountryDialog();
-            bool? result = dialog.ShowDialog();
+            if (dialog is not Window) return null;
+
+            bool? result = ((Window)dialog).ShowDialog();
             if (result.GetValueOrDefault())
             {
                 return dialog.Selected;
@@ -41,6 +44,36 @@ namespace TourAssist.ViewModel.Utility
             {
                 return null;
             }
+        }
+
+        public static Country? SelectCountry()
+        {
+            return GetDialogResult(new SelectCountryDialog());
+        }
+
+        internal static Region? SelectRegion()
+        {
+            return GetDialogResult(new SelectRegionDialog());
+        }
+
+        internal static Peculiarity? SelectPeculiarity()
+        {
+            return GetDialogResult(new SelectPeculiarityDialog());
+        }
+
+        internal static Peculiarity? SelectPeculiarityFor(Country country)
+        {
+            return GetDialogResult(new SelectPeculiarityDialog(country));
+        }
+
+        internal static Peculiarity? SelectPeculiarityFor(Region region)
+        {
+            return GetDialogResult(new SelectPeculiarityDialog(region));
+        }
+
+        internal static Peculiarity? SelectPeculiarityFor(City city)
+        {
+            return GetDialogResult(new SelectPeculiarityDialog(city));
         }
     }
 }

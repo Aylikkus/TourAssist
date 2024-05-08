@@ -31,12 +31,32 @@ namespace TourAssist.View
         {
             countriesGrid.Visibility = Visibility.Visible;
             regionsGrid.Visibility = Visibility.Collapsed;
+            citiesGrid.Visibility = Visibility.Collapsed;
+            peculiaritiesGrid.Visibility = Visibility.Collapsed;
         }
 
         private void regionsBtn_Click(object sender, RoutedEventArgs e)
         {
             countriesGrid.Visibility= Visibility.Collapsed;
             regionsGrid.Visibility= Visibility.Visible;
+            citiesGrid.Visibility = Visibility.Collapsed;
+            peculiaritiesGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void citiesBtn_Click(object sender, RoutedEventArgs e)
+        {
+            countriesGrid.Visibility = Visibility.Collapsed;
+            regionsGrid.Visibility = Visibility.Collapsed;
+            citiesGrid.Visibility = Visibility.Visible;
+            peculiaritiesGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void peculiaritiesBtn_Click(object sender, RoutedEventArgs e)
+        {
+            countriesGrid.Visibility = Visibility.Collapsed;
+            regionsGrid.Visibility = Visibility.Collapsed;
+            citiesGrid.Visibility = Visibility.Collapsed;
+            peculiaritiesGrid.Visibility = Visibility.Visible;
         }
     }
 }
