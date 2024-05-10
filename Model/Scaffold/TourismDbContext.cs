@@ -18,6 +18,8 @@ public partial class TourismDbContext : DbContext
 
     public virtual DbSet<City> Cities { get; set; }
 
+    public virtual DbSet<CityCountryView> Citycountryviews { get; set; }
+
     public virtual DbSet<Country> Countries { get; set; }
 
     public virtual DbSet<Entry> Entries { get; set; }
@@ -33,6 +35,8 @@ public partial class TourismDbContext : DbContext
     public virtual DbSet<Region> Regions { get; set; }
 
     public virtual DbSet<Route> Routes { get; set; }
+
+    public virtual DbSet<RouteCitiesView> Routecitiesviews { get; set; }
 
     public virtual DbSet<Transport> Transports { get; set; }
 
@@ -73,6 +77,20 @@ public partial class TourismDbContext : DbContext
                 .HasForeignKey(d => d.RegionIdRegion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_City_Region1");
+        });
+
+        modelBuilder.Entity<CityCountryView>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("citycountryview");
+
+            entity.Property(e => e.CountryIso31661)
+                .HasMaxLength(2)
+                .HasColumnName("Country_ISO3166-1");
+            entity.Property(e => e.FullName).HasMaxLength(45);
+            entity.Property(e => e.IdCity).HasColumnName("idCity");
+            entity.Property(e => e.RegionName).HasMaxLength(45);
         });
 
         modelBuilder.Entity<Country>(entity =>
@@ -253,6 +271,21 @@ public partial class TourismDbContext : DbContext
                 .HasForeignKey(d => d.TransportIdTransport)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Route_Transport1");
+        });
+
+        modelBuilder.Entity<RouteCitiesView>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("routecitiesview");
+
+            entity.Property(e => e.Arrival).HasColumnType("datetime");
+            entity.Property(e => e.Departure).HasColumnType("datetime");
+            entity.Property(e => e.FromCityName).HasMaxLength(45);
+            entity.Property(e => e.IdRoute).HasColumnName("idRoute");
+            entity.Property(e => e.Price).HasPrecision(10, 2);
+            entity.Property(e => e.ToCityName).HasMaxLength(45);
+            entity.Property(e => e.TransportName).HasMaxLength(45);
         });
 
         modelBuilder.Entity<Transport>(entity =>

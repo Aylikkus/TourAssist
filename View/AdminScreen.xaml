@@ -193,11 +193,26 @@
             </Grid.RowDefinitions>
 
             <ListBox ItemsSource="{Binding Routes}"
-SelectedItem="{Binding SelectedRoute}" Grid.RowSpan="2">
+                SelectedItem="{Binding SelectedRoute}" Grid.RowSpan="2">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <TextBlock Text="{Binding FromIdCityNavigation.FullName}"/>
+                            <TextBlock FontSize="18px">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} - {1}">
+                                        <Binding Path="SelectedRoute.FromCityName"/>
+                                        <Binding Path="SelectedRoute.ToCityName"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0:HH:mm}{1:HH:mm}">
+                                        <Binding Path="SelectedRoute.Departure"/>
+                                        <Binding Path="SelectedRoute.Arrival"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -205,9 +220,9 @@ SelectedItem="{Binding SelectedRoute}" Grid.RowSpan="2">
 
             <StackPanel Grid.Column="1">
                 <TextBlock>Из</TextBlock>
-                <Label Content="{Binding SelectedRoute.FromIdCityNavigation.FullName}"/>
+                <Label Content="{Binding SelectedRoute.FromCityName}"/>
                 <TextBlock>Куда</TextBlock>
-                <Label Content="{Binding SelectedRoute.ToIdCityNavigation.FullName}"/>
+                <Label Content="{Binding SelectedRoute.ToCityName}"/>
                 <TextBlock>Отбытие</TextBlock>
                 <xceed:DateTimePicker></xceed:DateTimePicker>
             </StackPanel>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -24,6 +25,7 @@ namespace TourAssist.ViewModel
                 Regions = new ObservableCollection<Region>(dbContext.Regions.ToList());
                 Cities = new ObservableCollection<City>(dbContext.Cities.ToList());
                 Peculiarities = new ObservableCollection<Peculiarity>(dbContext.Peculiarities.ToList());
+                Routes = new ObservableCollection<RouteCitiesView>(dbContext.Routecitiesviews.ToList());
             }
         }
 
@@ -651,18 +653,16 @@ namespace TourAssist.ViewModel
 
         #region Маршруты
 
-        private Route selectedRoute;
+        private RouteCitiesView selectedRoute;
 
-        public Route SelectedRoute
+        public RouteCitiesView SelectedRoute
         {
             get
             {
                 if (selectedRoute == null)
                 {
-                    selectedRoute = new Route();
+                    selectedRoute = new RouteCitiesView();
                     OnPropertyChanged(nameof(SelectedRoute));
-                    OnPropertyChanged(nameof(SelectedRoute.FromIdCityNavigation));
-                    OnPropertyChanged(nameof(SelectedRoute.ToIdCityNavigation));
                 }
 
                 return selectedRoute;
@@ -671,14 +671,12 @@ namespace TourAssist.ViewModel
             {
                 selectedRoute = value;
                 OnPropertyChanged(nameof(SelectedRoute));
-                OnPropertyChanged(nameof(SelectedRoute.FromIdCityNavigation));
-                OnPropertyChanged(nameof(SelectedRoute.ToIdCityNavigation));
             }
         }
 
-        private ObservableCollection<Route> routes;
+        private ObservableCollection<RouteCitiesView> routes;
 
-        public ObservableCollection<Route> Routes
+        public ObservableCollection<RouteCitiesView> Routes
         {
             get { return routes; }
             private set
@@ -693,17 +691,17 @@ namespace TourAssist.ViewModel
         {
             get
             {
-                return addCity ??= new RelayCommand(obj =>
+                return addRoute ??= new RelayCommand(obj =>
                 {
                     doContextAction(dbContext => dbContext.Routes.Add(
                         new Route
                         {
-                            FromIdCity = SelectedRoute.FromIdCity,
-                            ToIdCity = SelectedRoute.ToIdCity,
+                            FromIdCity = SelectedRoute.FromCityId,
+                            ToIdCity = SelectedRoute.ToCityId,
                             Departure = SelectedRoute.Departure,
                             Arrival = SelectedRoute.Arrival,
                             Price = SelectedRoute.Price,
-                            TransportIdTransport = SelectedRoute.TransportIdTransport
+                            TransportIdTransport = SelectedRoute.TransportId
                         }));
                 });
             }
@@ -716,7 +714,17 @@ namespace TourAssist.ViewModel
             {
                 return updateRoute ??= new RelayCommand(obj =>
                 {
-                    doContextAction(dbContext => dbContext.Routes.Update(SelectedRoute));
+                    doContextAction(dbContext =>
+                    {
+                        Route route = dbContext.Routes.Where(r => r.IdRoute == SelectedRoute.IdRoute).First();
+                        route.Departure = SelectedRoute.Departure;
+                        route.Arrival = SelectedRoute.Arrival;
+                        route.Price = SelectedRoute.Price;
+                        route.FromIdCity = SelectedRoute.FromCityId;
+                        route.ToIdCity = SelectedRoute.ToCityId;
+                        route.Price = SelectedRoute.Price;
+                        dbContext.Routes.Update(route);
+                    });
                 });
             }
         }
@@ -728,7 +736,11 @@ namespace TourAssist.ViewModel
             {
                 return removeRoute ??= new RelayCommand(obj =>
                 {
-                    doContextAction(dbContext => dbContext.Routes.Remove(SelectedRoute));
+                    doContextAction(dbContext =>
+                    {
+                        Route route = dbContext.Routes.Where(r => r.IdRoute == SelectedRoute.IdRoute).First();
+                        dbContext.Routes.Remove(route);
+                    });
                 });
             }
         }
@@ -743,8 +755,8 @@ namespace TourAssist.ViewModel
                     City? city = PopupService.SelectCity();
                     if (city != null)
                     {
-                        SelectedRoute.ToIdCity = city.IdCity;
-                        OnPropertyChanged(nameof(SelectedRoute.ToIdCityNavigation));
+                        SelectedRoute.ToCityId = city.IdCity;
+                        SelectedRoute.ToCityName = city.FullName;
                     }
                 });
             }
@@ -760,8 +772,8 @@ namespace TourAssist.ViewModel
                     City? city = PopupService.SelectCity();
                     if (city != null)
                     {
-                        SelectedRoute.FromIdCity = city.IdCity;
-                        OnPropertyChanged(nameof(SelectedRoute.FromIdCityNavigation));
+                        SelectedRoute.FromCityId = city.IdCity;
+                        SelectedRoute.FromCityName = city.FullName;
                     }
                 });
             }
@@ -777,8 +789,8 @@ namespace TourAssist.ViewModel
                     Transport? transport = PopupService.SelectTransport();
                     if (transport != null)
                     {
-                        SelectedRoute.TransportIdTransport = transport.IdTransport;
-                        OnPropertyChanged(nameof(SelectedRoute.TransportIdTransportNavigation));
+                        SelectedRoute.TransportId = transport.IdTransport;
+                        SelectedRoute.TransportName = transport.Name;
                     }
                 });
             }

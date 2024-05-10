@@ -21,35 +21,9 @@ public partial class Route
 
     public virtual ICollection<Entry> Entries { get; set; } = new List<Entry>();
 
-    public virtual City FromIdCityNavigation 
-    {
-        get
-        {
-            using (TourismDbContext dbContext = new TourismDbContext())
-            {
-                return dbContext.Cities.Where(c => c.IdCity == FromIdCity).First();
-            }
-        }
-        set
-        {
+    public virtual City FromIdCityNavigation { get; set; } = null!;
 
-        }
-    }
-
-    public virtual City ToIdCityNavigation
-    {
-        get
-        {
-            using (TourismDbContext dbContext = new TourismDbContext())
-            {
-                return dbContext.Cities.Where(c => c.IdCity == ToIdCity).First();
-            }
-        }
-        set
-        {
-
-        }
-    }
+    public virtual City ToIdCityNavigation { get; set; } = null!;
 
     public virtual Transport TransportIdTransportNavigation { get; set; } = null!;
 }
