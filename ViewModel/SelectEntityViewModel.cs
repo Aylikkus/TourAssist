@@ -18,11 +18,13 @@ namespace TourAssist.ViewModel
         private Region? selectedRegion;
         private City? selectedCity;
         private Peculiarity? selectedPeculiarity;
+        private Transport? selectedTransport;
 
         private ObservableCollection<Country> countries;
         private ObservableCollection<Region> regions;
         private ObservableCollection<City> cities;
         private ObservableCollection<Peculiarity> peculiarities;
+        private ObservableCollection<Transport> transports;
 
         public ObservableCollection<Country> Countries
         {
@@ -104,6 +106,26 @@ namespace TourAssist.ViewModel
             }
         }
 
+        public ObservableCollection<Transport> Transports
+        {
+            get { return transports; }
+            private set
+            {
+                transports = value;
+                OnPropertyChanged(nameof(Transports));
+            }
+        }
+
+        public Transport? SelectedTransport
+        {
+            get { return selectedTransport; }
+            set
+            {
+                selectedTransport = value;
+                OnPropertyChanged(nameof(SelectedTransport));
+            }
+        }
+
         public void Fetch(bool countries, bool regions, bool cities, bool peculiarities)
         {
             using (TourismDbContext dbContext = new TourismDbContext())
@@ -119,6 +141,14 @@ namespace TourAssist.ViewModel
 
                 if (peculiarities)
                     Peculiarities = new ObservableCollection<Peculiarity>(dbContext.Peculiarities.ToList());
+            }
+        }
+
+        public void FetchTransports()
+        {
+            using (TourismDbContext dbContext = new TourismDbContext())
+            {
+                Transports = new ObservableCollection<Transport>(dbContext.Transports.ToList());
             }
         }
 
@@ -168,6 +198,7 @@ namespace TourAssist.ViewModel
             regions = new ObservableCollection<Region>();
             cities = new ObservableCollection<City>();
             peculiarities = new ObservableCollection<Peculiarity>();
+            transports = new ObservableCollection<Transport>();
         }
     }
 }

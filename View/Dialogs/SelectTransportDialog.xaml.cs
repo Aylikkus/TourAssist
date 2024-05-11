@@ -19,17 +19,17 @@ namespace TourAssist.View.Dialogs
     /// <summary>
     /// Логика взаимодействия для SelectEntityDialog.xaml
     /// </summary>
-    public partial class SelectCityDialog : Window, IDialogView<City>
+    public partial class SelectTransportDialog : Window, IDialogView<Transport>
     {
         SelectEntityViewModel viewModel = new SelectEntityViewModel();
-        public SelectCityDialog()
+        public SelectTransportDialog()
         {
             InitializeComponent();
-            viewModel.Fetch(false, false, true, false);
+            viewModel.FetchTransports();
             DataContext = viewModel;
         }
 
-        public City? Selected { get => viewModel.SelectedCity; }
+        public Transport? Selected { get => viewModel.SelectedTransport; }
 
         private void okButton_Click(object sender, RoutedEventArgs e)
         {

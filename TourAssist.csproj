@@ -24,6 +24,9 @@
     <Compile Update="View\Dialogs\SelectPeculiarityDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\Dialogs\SelectTransportDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\Dialogs\SelectRegionDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

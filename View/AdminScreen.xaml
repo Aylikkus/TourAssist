@@ -200,16 +200,16 @@
                             <TextBlock FontSize="18px">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0} - {1}">
-                                        <Binding Path="SelectedRoute.FromCityName"/>
-                                        <Binding Path="SelectedRoute.ToCityName"/>
+                                        <Binding Path="FromCityName"/>
+                                        <Binding Path="ToCityName"/>
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
                             <TextBlock>
                                 <TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0:HH:mm}{1:HH:mm}">
-                                        <Binding Path="SelectedRoute.Departure"/>
-                                        <Binding Path="SelectedRoute.Arrival"/>
+                                    <MultiBinding StringFormat="{}{0:dd.MM.yy HH:mm} - {1:dd.MM.yy HH:mm}">
+                                        <Binding Path="Departure"/>
+                                        <Binding Path="Arrival"/>
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -224,13 +224,22 @@
                 <TextBlock>Куда</TextBlock>
                 <Label Content="{Binding SelectedRoute.ToCityName}"/>
                 <TextBlock>Отбытие</TextBlock>
-                <xceed:DateTimePicker></xceed:DateTimePicker>
+                <xceed:DateTimePicker Value="{Binding SelectedRoute.Departure}"/>
+                <TextBlock>Прибытие</TextBlock>
+                <xceed:DateTimePicker Value="{Binding SelectedRoute.Arrival}"/>
+                <TextBlock>Цена</TextBlock>
+                <xceed:DecimalUpDown Value="{Binding SelectedRoute.Price}"/>
+                <TextBlock>Транспорт</TextBlock>
+                <Label Content="{Binding SelectedRoute.TransportName}"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="1">
-                <Button Content="Добавить" Command="{Binding AddPeculiarity}"/>
-                <Button Content="Обновить" Command="{Binding UpdatePeculiarity}"/>
-                <Button Content="Удалить" Command="{Binding RemovePeculiarity}"/>
+                <Button Content="Добавить" Command="{Binding AddRoute}"/>
+                <Button Content="Обновить" Command="{Binding UpdateRoute}"/>
+                <Button Content="Удалить" Command="{Binding RemoveRoute}"/>
+                <Button Content="Выбрать город отбытия..." Command="{Binding SelectFromCity}"/>
+                <Button Content="Выбрать город прибытия..." Command="{Binding SelectToCity}"/>
+                <Button Content="Выбрать транспорт..." Command="{Binding SelectTransport}"/>
             </StackPanel>
         </Grid>
 

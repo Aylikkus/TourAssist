@@ -51,39 +51,40 @@ namespace TourAssist.ViewModel.Utility
             return GetDialogResult(new SelectCountryDialog());
         }
 
-        internal static Region? SelectRegion()
+        public static Region? SelectRegion()
         {
             return GetDialogResult(new SelectRegionDialog());
         }
 
-        internal static Peculiarity? SelectPeculiarity()
+        public static Peculiarity? SelectPeculiarity()
         {
             return GetDialogResult(new SelectPeculiarityDialog());
         }
 
-        internal static Peculiarity? SelectPeculiarityFor(Country country)
+        public static Peculiarity? SelectPeculiarityFor(Country country)
         {
             return GetDialogResult(new SelectPeculiarityDialog(country));
         }
 
-        internal static Peculiarity? SelectPeculiarityFor(Region region)
+        public static Peculiarity? SelectPeculiarityFor(Region region)
         {
             return GetDialogResult(new SelectPeculiarityDialog(region));
         }
 
-        internal static Peculiarity? SelectPeculiarityFor(City city)
+        public static Peculiarity? SelectPeculiarityFor(City city)
         {
             return GetDialogResult(new SelectPeculiarityDialog(city));
         }
 
-        internal static Transport? SelectTransport()
+        public static City? SelectCity()
         {
-            throw new NotImplementedException();
+            return GetDialogResult(new SelectCityDialog());
         }
 
-        internal static City? SelectCity()
+        public static Transport? SelectTransport()
         {
-            throw new NotImplementedException();
+            return GetDialogResult(new SelectTransportDialog());
         }
+
     }
 }

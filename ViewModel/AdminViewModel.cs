@@ -12,6 +12,7 @@ using System.Windows;
 using TourAssist.Model.Scaffold;
 using TourAssist.View;
 using TourAssist.ViewModel.Utility;
+using Xceed.Wpf.Toolkit;
 
 namespace TourAssist.ViewModel
 {
@@ -25,7 +26,7 @@ namespace TourAssist.ViewModel
                 Regions = new ObservableCollection<Region>(dbContext.Regions.ToList());
                 Cities = new ObservableCollection<City>(dbContext.Cities.ToList());
                 Peculiarities = new ObservableCollection<Peculiarity>(dbContext.Peculiarities.ToList());
-                Routes = new ObservableCollection<RouteCitiesView>(dbContext.Routecitiesviews.ToList());
+                Routes = new ObservableCollection<RouteCitiesView>(dbContext.RouteCitiesViews.ToList());
             }
         }
 
@@ -757,6 +758,7 @@ namespace TourAssist.ViewModel
                     {
                         SelectedRoute.ToCityId = city.IdCity;
                         SelectedRoute.ToCityName = city.FullName;
+                        OnPropertyChanged(nameof(SelectedRoute));
                     }
                 });
             }
@@ -774,6 +776,7 @@ namespace TourAssist.ViewModel
                     {
                         SelectedRoute.FromCityId = city.IdCity;
                         SelectedRoute.FromCityName = city.FullName;
+                        OnPropertyChanged(nameof(SelectedRoute));
                     }
                 });
             }
@@ -791,6 +794,7 @@ namespace TourAssist.ViewModel
                     {
                         SelectedRoute.TransportId = transport.IdTransport;
                         SelectedRoute.TransportName = transport.Name;
+                        OnPropertyChanged(nameof(SelectedRoute));
                     }
                 });
             }

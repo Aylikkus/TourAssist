@@ -18,7 +18,7 @@ public partial class TourismDbContext : DbContext
 
     public virtual DbSet<City> Cities { get; set; }
 
-    public virtual DbSet<CityCountryView> Citycountryviews { get; set; }
+    public virtual DbSet<CityCountryView> CityCountryViews { get; set; }
 
     public virtual DbSet<Country> Countries { get; set; }
 
@@ -36,7 +36,7 @@ public partial class TourismDbContext : DbContext
 
     public virtual DbSet<Route> Routes { get; set; }
 
-    public virtual DbSet<RouteCitiesView> Routecitiesviews { get; set; }
+    public virtual DbSet<RouteCitiesView> RouteCitiesViews { get; set; }
 
     public virtual DbSet<Transport> Transports { get; set; }
 
