@@ -89,7 +89,8 @@ namespace TourAssist.ViewModel
                     {
                         sb.Append(p.Description + ", ");
                     }
-                    sb.Remove(sb.Length - 2, 2);
+                    if (sb.Length > 1)
+                        sb.Remove(sb.Length - 2, 2);
                     return sb.ToString();
                 }
             }
@@ -251,7 +252,8 @@ namespace TourAssist.ViewModel
                     {
                         sb.Append(p.Description + ", ");
                     }
-                    sb.Remove(sb.Length - 2, 2);
+                    if (sb.Length > 1)
+                        sb.Remove(sb.Length - 2, 2);
                     return sb.ToString();
                 }
             }
@@ -449,7 +451,8 @@ namespace TourAssist.ViewModel
                     {
                         sb.Append(p.Description + ", ");
                     }
-                    sb.Remove(sb.Length - 2, 2);
+                    if (sb.Length > 1)
+                        sb.Remove(sb.Length - 2, 2);
                     return sb.ToString();
                 }
             }
