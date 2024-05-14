@@ -21,6 +21,10 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
+        <StackPanel x:Name="userPanel" Grid.Column="0">
+            <Button Command="{Binding LogOut}">Выйти</Button>
+        </StackPanel>
+        
         <Grid x:Name="countriesGrid" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>

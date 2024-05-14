@@ -24,7 +24,14 @@ namespace TourAssist.View
         public AdminScreen()
         {
             InitializeComponent();
-            DataContext = new AdminViewModel();
+            AdminViewModel avm = new AdminViewModel();
+            DataContext = avm;
+            avm.WindowClose += new EventHandler(CloweWindow);
+        }
+
+        private void CloweWindow(object? sender, EventArgs e)
+        {
+            Close();
         }
 
         private void countriesBtn_Click(object sender, RoutedEventArgs e)

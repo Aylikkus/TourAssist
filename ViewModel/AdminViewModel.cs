@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using TourAssist.Model;
 using TourAssist.Model.Scaffold;
 using TourAssist.View;
 using TourAssist.ViewModel.Utility;
@@ -805,12 +806,29 @@ namespace TourAssist.ViewModel
 
         #endregion
 
+        private RelayCommand? logOut;
+        public RelayCommand LogOut
+        {
+            get
+            {
+                return logOut ??= new RelayCommand(obj =>
+                {
+                    LoginScreen loginScreen = new LoginScreen();
+                    loginScreen.Show();
+                    WindowClose?.Invoke(this, new EventArgs());
+                    AuthManager.LogOut();
+                });
+            }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
+
+        public event EventHandler? WindowClose;
 
         public AdminViewModel() 
         {
