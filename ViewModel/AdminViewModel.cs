@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using TourAssist.Model;
 using TourAssist.Model.Scaffold;
 using TourAssist.View;
@@ -813,10 +814,9 @@ namespace TourAssist.ViewModel
             {
                 return logOut ??= new RelayCommand(obj =>
                 {
-                    LoginScreen loginScreen = new LoginScreen();
-                    loginScreen.Show();
-                    WindowClose?.Invoke(this, new EventArgs());
                     AuthManager.LogOut();
+                    PopupService.OpenWindow(typeof(LoginScreen));
+                    WindowClose?.Invoke(this, new EventArgs());
                 });
             }
         }

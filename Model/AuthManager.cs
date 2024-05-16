@@ -32,6 +32,8 @@ namespace TourAssist.Model
         public static void LogOut()
         {
             CurrentUser = null;
+            Configuration.GetConfiguration().Credentials = null;
+            Configuration.Save();
         }
 
         public static bool Authorize(string login, string password, bool saveCredentials = false)
