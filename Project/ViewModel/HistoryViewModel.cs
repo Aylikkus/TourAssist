@@ -140,7 +140,7 @@ namespace TourAssist.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        public PlacesSearchViewModel()
+        public HistoryViewModel()
         {
             query = "";
         }
