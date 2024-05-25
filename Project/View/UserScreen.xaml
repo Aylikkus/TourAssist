@@ -1,0 +1,41 @@
+﻿<Window x:Class="TourAssist.View.UserScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="UserScreen" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" DataContext="{Binding UserViewModel}">
+            <Button Command="{Binding LogOut}">Выйти</Button>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1">
+            <Button x:Name="openTourSearch" Click="openTourSearch_Click">Поиск путевок</Button>
+            <Button x:Name="openPlacesSearch" Click="openPlacesSearch_Click">Поиск мест</Button>
+            <Button x:Name="openHistory" Click="openHistory_Click">История</Button>
+        </StackPanel>
+
+        <Grid x:Name="tourSearchGrid" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Collapsed"
+                DataContext="{Binding TourSearchViewModel}">
+            <Label Content="Поиск путёвок"></Label>
+        </Grid>
+
+        <Grid x:Name="placesSearchGrid" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Collapsed"
+                DataContext="{Binding PlacesSearchViewModel}">
+            <Label Content="Поиск mst"></Label>
+        </Grid>
+
+        <Grid x:Name="historyhGrid" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Collapsed"
+        DataContext="{Binding HistoryViewModel}">
+            <Label Content="Istoriya"></Label>
+        </Grid>
+    </Grid>
+</Window>
