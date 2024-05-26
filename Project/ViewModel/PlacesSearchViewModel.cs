@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TourAssist.Model.Scaffold;
 using TourAssist.ViewModel.Utility;
+using TourAssist.Model;
 
 namespace TourAssist.ViewModel
 {
@@ -29,7 +30,7 @@ namespace TourAssist.ViewModel
         }
 
         private ObservableCollection<Country> searchResultCountries;
-        private ObservableCollection<Region> searchResultRegion;
+        private ObservableCollection<Region> searchResultRegions;
         private ObservableCollection<City> searchResultCities;
 
         public ObservableCollection<Country> SearchResultCountries
@@ -45,16 +46,16 @@ namespace TourAssist.ViewModel
             }
         }
 
-        public ObservableCollection<Region> SearchResultRegion
+        public ObservableCollection<Region> SearchResultRegions
         {
             get
             {
-                return searchResultRegion;
+                return searchResultRegions;
             }
             set
             {
-                searchResultRegion = value;
-                OnPropertyChanged(nameof(SearchResultRegion));
+                searchResultRegions = value;
+                OnPropertyChanged(nameof(SearchResultRegions));
             }
         }
 
@@ -122,7 +123,43 @@ namespace TourAssist.ViewModel
             {
                 return search ??= new RelayCommand(obj =>
                 {
+                    Interpreter interpreter = new Interpreter(Query);
 
+                    if (SearchCountries)
+                    {
+                        SearchResultCountries = new ObservableCollection<Country>(
+                            interpreter.SearchCountries());
+                    }
+
+                    if (SearchRegions)
+                    {
+                        SearchResultRegions = new ObservableCollection<Region>(
+                            interpreter.SearchRegions());
+                    }
+
+                    if (SearchCities)
+                    {
+                        SearchResultCities = new ObservableCollection<City>(
+                            interpreter.SearchCities());
+                    }
+                });
+            }
+        }
+
+        private RelayCommand? addPeculiarity;
+
+        public RelayCommand AddPeculiarity
+        {
+            get
+            {
+                return addPeculiarity ??= new RelayCommand(obj =>
+                {
+                    Peculiarity? result = PopupService.SelectPeculiarity();
+
+                    if (result != null)
+                    {
+                        Query += Query == "" ? result.Description : " и " + result.Description;
+                    }
                 });
             }
         }
@@ -132,6 +169,15 @@ namespace TourAssist.ViewModel
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+
+        public PlacesSearchViewModel()
+        {
+            query = "";
+
+            searchResultCountries = new ObservableCollection<Country>();
+            searchResultRegions = new ObservableCollection<Region>();
+            searchResultCities = new ObservableCollection<City>();
         }
     }
 }

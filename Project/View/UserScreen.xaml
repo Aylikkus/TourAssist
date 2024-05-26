@@ -30,7 +30,89 @@
 
         <Grid x:Name="placesSearchGrid" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Collapsed"
                 DataContext="{Binding PlacesSearchViewModel}">
-            <Label Content="Поиск mst"></Label>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Поиск мест"></Label>
+                <Button Grid.Column="1" Command="{Binding Search}">Поиск</Button>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBox Text="{Binding Query}"/>
+                <Button Grid.Column="1" Command="{Binding AddPeculiarity}">Добавить особенность</Button>
+            </Grid>
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <RadioButton x:Name="countriesRb" IsChecked="{Binding SearchCountries}" GroupName="searchCategory" VerticalAlignment="Center" Checked="countriesRb_Checked"/>
+                <Label Content="Страны"></Label>
+                <RadioButton x:Name="regionsRb" IsChecked="{Binding SearchRegions}" GroupName="searchCategory" VerticalAlignment="Center" Checked="regionsRb_Checked"/>
+                <Label Content="Регионы"></Label>
+                <RadioButton x:Name="citiesRb" IsChecked="{Binding SearchCities}" GroupName="searchCategory" VerticalAlignment="Center" Checked="citiesRb_Checked"/>
+                <Label Content="Города"></Label>
+            </StackPanel>
+            <ListBox x:Name="countriesListBox" Grid.Row="3" 
+                     ItemsSource="{Binding SearchResultCountries}" Visibility="Collapsed">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock FontSize="18" Text="{Binding Iso31661}"/>
+                                <TextBlock Text="{Binding FullName}"/>
+                            </StackPanel>
+                            <TextBlock Grid.Column="1" Text="{Binding AllPeculiarities}" TextAlignment="Right"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <ListBox x:Name="regionsListBox" Grid.Row="3" 
+                    ItemsSource="{Binding SearchResultRegions}" Visibility="Collapsed">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock FontSize="18" Text="{Binding FullName}"/>
+                                <TextBlock Text="{Binding CountryIso31661}"/>
+                            </StackPanel>
+                            <TextBlock Grid.Column="1" Text="{Binding AllPeculiarities}" TextAlignment="Right"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <ListBox x:Name="citiesListBox" Grid.Row="3" 
+                    ItemsSource="{Binding SearchResultCities}" Visibility="Collapsed">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontSize="18" Text="{Binding FullName}"/>
+                            <TextBlock Grid.Column="1" Text="{Binding AllPeculiarities}" TextAlignment="Right"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
 
         <Grid x:Name="historyhGrid" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Collapsed"

@@ -44,8 +44,6 @@ public partial class TourismDbContext : DbContext
 
     public virtual DbSet<Userrole> Userroles { get; set; }
 
-    public virtual DbSet<Usertour> Usertours { get; set; }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         Configuration configuration = Configuration.GetConfiguration();
@@ -330,31 +328,6 @@ public partial class TourismDbContext : DbContext
 
             entity.Property(e => e.IdUserRole).HasColumnName("idUserRole");
             entity.Property(e => e.Name).HasMaxLength(45);
-        });
-
-        modelBuilder.Entity<Usertour>(entity =>
-        {
-            entity.HasKey(e => e.IdUserTour).HasName("PRIMARY");
-
-            entity.ToTable("usertour");
-
-            entity.HasIndex(e => e.ArrivalIdEntry, "fk_UserTour_Entry1_idx");
-
-            entity.HasIndex(e => e.DepartureIdEntry, "fk_UserTour_Entry2_idx");
-
-            entity.Property(e => e.IdUserTour).HasColumnName("idUserTour");
-            entity.Property(e => e.ArrivalIdEntry).HasColumnName("Arrival_idEntry");
-            entity.Property(e => e.DepartureIdEntry).HasColumnName("Departure_idEntry");
-
-            entity.HasOne(d => d.ArrivalIdEntryNavigation).WithMany(p => p.UsertourArrivalIdEntryNavigations)
-                .HasForeignKey(d => d.ArrivalIdEntry)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_UserTour_Entry1");
-
-            entity.HasOne(d => d.DepartureIdEntryNavigation).WithMany(p => p.UsertourDepartureIdEntryNavigations)
-                .HasForeignKey(d => d.DepartureIdEntry)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_UserTour_Entry2");
         });
 
         OnModelCreatingPartial(modelBuilder);

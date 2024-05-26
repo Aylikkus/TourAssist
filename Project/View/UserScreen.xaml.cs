@@ -59,5 +59,26 @@ namespace TourAssist.View
             placesSearchGrid.Visibility = Visibility.Collapsed;
             historyhGrid.Visibility = Visibility.Visible;
         }
+
+        private void countriesRb_Checked(object sender, RoutedEventArgs e)
+        {
+            countriesListBox.Visibility = Visibility.Visible;
+            regionsListBox.Visibility = Visibility.Collapsed;
+            citiesListBox.Visibility = Visibility.Collapsed;
+        }
+
+        private void regionsRb_Checked(object sender, RoutedEventArgs e)
+        {
+            countriesListBox.Visibility = Visibility.Collapsed;
+            regionsListBox.Visibility = Visibility.Visible;
+            citiesListBox.Visibility = Visibility.Collapsed;
+        }
+
+        private void citiesRb_Checked(object sender, RoutedEventArgs e)
+        {
+            countriesListBox.Visibility = Visibility.Collapsed;
+            regionsListBox.Visibility = Visibility.Collapsed;
+            citiesListBox.Visibility = Visibility.Visible;
+        }
     }
 }
