@@ -158,7 +158,7 @@ namespace TourAssist.ViewModel
 
                     if (result != null)
                     {
-                        Query += Query == "" ? result.Description : " и " + result.Description;
+                        Query += Query == "" ? $"\"{result.Description}\"" : " и " + $"\"{result.Description}\"";
                     }
                 });
             }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using TourAssist.Model;
 using TourAssist.Model.Scaffold;
 using TourAssist.ViewModel.Utility;
 
@@ -13,121 +14,32 @@ namespace TourAssist.ViewModel
 {
     public class HistoryViewModel : INotifyPropertyChanged
     {
-        string query;
-        bool searchCountry, searchRegion, searchCity;
-        ObservableCollection<Country> searchResultCountries;
-        ObservableCollection<Region> searchResultRegions;
-        ObservableCollection<City> searchResultCities;
-
-        public string Query 
-        { 
-            get
+        private ObservableCollection<Entry> userEntries;
+        public ObservableCollection<Entry> UserEntries
+        {
+            get { return userEntries; }
+            private set
             {
-                return query;
-            }
-            set
-            {
-                query = value;
-                OnPropertyChanged(nameof(Query));
+                userEntries = value;
+                OnPropertyChanged(nameof(UserEntries));
             }
         }
 
-        public bool SearchCountry
+        private RelayCommand? refresh;
+        public RelayCommand Refresh
         {
             get
             {
-                return searchCountry;
-            }
-            set
-            {
-                searchCountry = value;
-                OnPropertyChanged(nameof(SearchCountry));
-            }
-        }
-
-        public bool SearchRegion
-        {
-            get
-            {
-                return searchRegion;
-            }
-            set
-            {
-                searchRegion = value;
-                OnPropertyChanged(nameof(SearchRegion));
-            }
-        }
-
-        public bool SearchCity
-        {
-            get
-            {
-                return searchCity;
-            }
-            set
-            {
-                searchCity = value;
-                OnPropertyChanged(nameof(SearchCity));
-            }
-        }
-
-        public ObservableCollection<Country> SearchResultCountries
-        {
-            get
-            {
-                return searchResultCountries;
-            }
-            set
-            {
-                searchResultCountries = value;
-                OnPropertyChanged(nameof(SearchResultCountries));
-            }
-        }
-
-        public ObservableCollection<Region> SearchResultRegions
-        {
-            get
-            {
-                return searchResultRegions;
-            }
-            set
-            {
-                searchResultRegions = value;
-                OnPropertyChanged(nameof(SearchResultRegions));
-            }
-        }
-
-        public ObservableCollection<City> SearchResultCities
-        {
-            get
-            {
-                return searchResultCities;
-            }
-            set
-            {
-                searchResultCities = value;
-                OnPropertyChanged(nameof(SearchResultCities));
-            }
-        }
-
-        private RelayCommand? search;
-        public RelayCommand Search
-        {
-            get
-            {
-                return search ??= new RelayCommand(obj =>
+                return refresh ??= new RelayCommand(obj =>
                 {
-                    if (SearchCountry)
-                    {
+                    User? user = AuthManager.CurrentUser;
 
-                    }
-                    if (SearchRegion)
-                    {
+                    if (user == null) return;
 
-                    }
-                    if (SearchCity)
+                    using (TourismDbContext dbContext = new TourismDbContext())
                     {
-
+                        UserEntries = new ObservableCollection<Entry>(
+                            dbContext.Entries.Where((e) => e.UserIdUser == user.IdUser));
                     }
                 });
             }
@@ -142,7 +54,7 @@ namespace TourAssist.ViewModel
 
         public HistoryViewModel()
         {
-            query = "";
+            userEntries = new ObservableCollection<Entry>();
         }
     }
 }

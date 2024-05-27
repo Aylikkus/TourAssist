@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.RightsManagement;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 using TourAssist.Model.Scaffold;
 
 namespace TourAssist.Model
@@ -58,16 +61,25 @@ namespace TourAssist.Model
 
         public BinaryTree GetAST()
         {
-            string[] tokens = Query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            MatchCollection composites = Regex.Matches(Query, "\\\"(.*?)\\\"");
+            string[] tokens = Query.Split(' ');
+
+            if (composites.Count == 1 && 
+                tokens.Where((t) => t == "и" || t == "или").FirstOrDefault() == null)
+            {
+                Node single = new Node(Operator.OR, composites[0].Value.Trim('"'), "");
+                return new BinaryTree(single);
+            }
 
             if (tokens.Length == 1)
             {
-                Node node = new Node(Operator.OR, tokens[0], "");
-                return new BinaryTree(node);
+                Node single = new Node(Operator.OR, tokens[0], "");
+                return new BinaryTree(single);
             }
 
             Node? prevNode = null;
             List<Node> nodes = new List<Node>();
+            int compositeIndex = 0;
             for (int i = 1; i < tokens.Length - 1; i++)
             {
                 Operator op;
@@ -88,11 +100,27 @@ namespace TourAssist.Model
 
                 if (prevNode == null)
                 {
-                    node = new Node(op, tokens[i - 1], tokens[i + 1]);
+                    string left;
+                    string right;
+
+                    if (tokens[i - 1].EndsWith('"'))
+                        left = composites[compositeIndex++].Value.Trim('"');
+                    else
+                        left = tokens[i - 1];
+
+                    if (tokens[i + 1].StartsWith('"'))
+                        right = composites[compositeIndex++].Value.Trim('"');
+                    else
+                        right = tokens[i + 1];
+
+                    node = new Node(op, left, right);
                 }
                 else
                 {
-                    node = new Node(op, prevNode, tokens[i + 1]);
+                    if (tokens[i + 1].StartsWith('"'))
+                        node = new Node(op, prevNode, composites[compositeIndex++].Value);
+                    else
+                        node = new Node(op, prevNode, tokens[i + 1]);
                 }
 
                 prevNode = node;
@@ -575,7 +603,7 @@ namespace TourAssist.Model
                 using (TourismDbContext dbContext = new TourismDbContext())
                 {
                     List<RouteCitiesView> routes = dbContext.RouteCitiesViews.Where((r) =>
-                        r.ToCityId == fromCity.IdCity).ToList();
+                        r.FromCityId == fromCity.IdCity).ToList();
                     List<CityCountryView> cities = dbContext.CityCountryViews.Where((c) =>
                         c.CountryIso31661 == toCountry.Iso31661).ToList();
 

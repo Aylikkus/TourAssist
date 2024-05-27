@@ -146,6 +146,67 @@ namespace TourAssist.ViewModel
             {
                 departureDate = value;
                 OnPropertyChanged(nameof(DepartureDate));
+                OnPropertyChanged(nameof(DepartureDateTime));
+                OnPropertyChanged(nameof(SearchResults));
+            }
+        }
+
+        public DateTime DepartureDateTime
+        {
+            get
+            {
+                return departureDate.ToDateTime(new TimeOnly());
+            }
+            set
+            {
+                departureDate = DateOnly.FromDateTime(value);
+                OnPropertyChanged(nameof(DepartureDateTime));
+                OnPropertyChanged(nameof(DepartureDate));
+                OnPropertyChanged(nameof(SearchResults));
+            }
+        }
+
+        private bool filterPeople;
+        public bool FilterPeople
+        {
+            get
+            {
+                return filterPeople;
+            }
+            set
+            {
+                filterPeople = value;
+                OnPropertyChanged(nameof(FilterPeople));
+                OnPropertyChanged(nameof(SearchResults));
+            }
+        }
+
+        private bool filterPrice;
+        public bool FilterPrice
+        {
+            get
+            {
+                return filterPrice;
+            }
+            set
+            {
+                filterPrice = value;
+                OnPropertyChanged(nameof(FilterPrice));
+                OnPropertyChanged(nameof(SearchResults));
+            }
+        }
+
+        private bool filterDate;
+        public bool FilterDate
+        {
+            get
+            {
+                return filterDate;
+            }
+            set
+            {
+                filterDate = value;
+                OnPropertyChanged(nameof(FilterDate));
                 OnPropertyChanged(nameof(SearchResults));
             }
         }
@@ -156,10 +217,18 @@ namespace TourAssist.ViewModel
         {
             get
             {
-                return new ObservableCollection<RouteCitiesView>(searchResults.Where((r) => 
-                    r.TransportCapacity >= peopleCount &&
-                    r.Price <= priceLessThanEqual && 
-                    DateOnly.FromDateTime(r.Departure) == DepartureDate));
+                var filtered = searchResults as IEnumerable<RouteCitiesView>;
+
+                if (FilterPeople)
+                    filtered = filtered.Where((r) => r.TransportCapacity >= peopleCount);
+
+                if (FilterPrice)
+                    filtered = filtered.Where((r) => r.Price <= priceLessThanEqual);
+
+                if (FilterDate)
+                    filtered = filtered.Where((r) => DateOnly.FromDateTime(r.Departure) == DepartureDate);
+
+                return new ObservableCollection<RouteCitiesView>(filtered);
             }
             set
             {
@@ -181,6 +250,54 @@ namespace TourAssist.ViewModel
             }
         }
 
+        private RelayCommand? selectFromCity;
+        public RelayCommand SelectFromCity
+        {
+            get
+            {
+                return selectFromCity ??= new RelayCommand(obj =>
+                {
+                    FromCity = PopupService.SelectCity();
+                });
+            }
+        }
+
+        private RelayCommand? selectToCountry;
+        public RelayCommand SelectToCountry
+        {
+            get
+            {
+                return selectToCountry ??= new RelayCommand(obj =>
+                {
+                    ToCountry = PopupService.SelectCountry();
+                });
+            }
+        }
+
+        private RelayCommand? selectToRegion;
+        public RelayCommand SelectToRegion
+        {
+            get
+            {
+                return selectToRegion ??= new RelayCommand(obj =>
+                {
+                    ToRegion = PopupService.SelectRegion();
+                });
+            }
+        }
+
+        private RelayCommand? selectToCity;
+        public RelayCommand SelectToCity
+        {
+            get
+            {
+                return selectToCity ??= new RelayCommand(obj =>
+                {
+                    ToCity = PopupService.SelectCity();
+                });
+            }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -191,6 +308,9 @@ namespace TourAssist.ViewModel
         public TourSearchViewModel()
         {
             searchResults = new ObservableCollection<RouteCitiesView>();
+            DepartureDateTime = DateTime.Now;
+            PriceLessThanEqual = 1;
+            PeopleCount = 1;
         }
     }
 }

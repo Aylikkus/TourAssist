@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TourAssist.ViewModel.Utility;
 
 namespace TourAssist.Model.Scaffold;
 

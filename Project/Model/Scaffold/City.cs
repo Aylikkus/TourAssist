@@ -20,26 +20,4 @@ public partial class City
     public virtual ICollection<Route> RouteFromIdCityNavigations { get; set; } = new List<Route>();
 
     public virtual ICollection<Route> RouteToIdCityNavigations { get; set; } = new List<Route>();
-
-    public string AllPeculiarities
-    {
-        get
-        {
-            using (TourismDbContext dbContext = new TourismDbContext())
-            {
-                var joins = new ObservableCollection<PecularitiesCity>(dbContext.PecularitiesCities
-                    .Where(pc => pc.CityIdCity == IdCity));
-                var pecs = new ObservableCollection<Peculiarity>(dbContext.Peculiarities.ToList()
-                    .Where(p => joins.Where(j => j.PeculiarityIdPeculiarity == p.IdPeculiarity).Count() > 0));
-                StringBuilder sb = new StringBuilder();
-                foreach (var p in pecs)
-                {
-                    sb.Append(p.Description + ", ");
-                }
-                if (sb.Length > 1)
-                    sb.Remove(sb.Length - 2, 2);
-                return sb.ToString();
-            }
-        }
-    }
 }

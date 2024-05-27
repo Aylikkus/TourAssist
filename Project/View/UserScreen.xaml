@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="UserScreen" Height="450" Width="800">
     <Grid>
@@ -25,7 +26,133 @@
 
         <Grid x:Name="tourSearchGrid" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Collapsed"
                 DataContext="{Binding TourSearchViewModel}">
-            <Label Content="Поиск путёвок"></Label>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Поиск путёвок"></Label>
+                <Button Grid.Column="1" Command="{Binding Search}">Поиск</Button>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Откуда (город)"></Label>
+                <Label Grid.Column="1" Content="{Binding FromCity.FullName}"/>
+                <Button Grid.Column="2" Command="{Binding SelectFromCity}">Выбрать город</Button>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Куда"></Label>
+                <Label Grid.Row="1" Content="Страна"></Label>
+                <Label Grid.Row="2" Content="{Binding ToCountry.FullName}"/>
+                <Button Grid.Row="3" Command="{Binding SelectToCountry}">Выбрать Страну</Button>
+
+                <Label Grid.Row="1" Grid.Column="1" Content="Регион"></Label>
+                <Label Grid.Row="2" Grid.Column="1" Content="{Binding ToRegion.FullName}"/>
+                <Button Grid.Row="3" Grid.Column="1" Command="{Binding SelectToRegion}">Выбрать Регион</Button>
+
+                <Label Grid.Row="1" Grid.Column="2" Content="Город"></Label>
+                <Label Grid.Row="2" Grid.Column="2" Content="{Binding ToCity.FullName}"/>
+                <Button Grid.Row="3" Grid.Column="2" Command="{Binding SelectToCity}">Выбрать Город</Button>
+            </Grid>
+            <Grid Grid.Row="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Кол-во людей"></Label>
+                    <CheckBox Grid.Column="1" IsChecked="{Binding FilterPeople}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                </Grid>
+                <xceed:IntegerUpDown Grid.Row="1" Value="{Binding PeopleCount}" Minimum="1"/>
+
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Цена (≤)"></Label>
+                    <CheckBox Grid.Column="1" IsChecked="{Binding FilterPrice}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                </Grid>
+                <xceed:DoubleUpDown Grid.Column="1" Grid.Row="1" Value="{Binding PriceLessThanEqual}" Minimum="1"/>
+
+                <Grid Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="2" Content="Дата отбытия"></Label>
+                    <CheckBox Grid.Column="1" IsChecked="{Binding FilterDate}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                </Grid>
+                <DatePicker Grid.Column="2" Grid.Row="1" SelectedDate="{Binding DepartureDateTime}"/>
+            </Grid>
+            <ListBox Grid.Row="4"
+                ItemsSource="{Binding SearchResults}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock FontSize="18" Text="{Binding ToCityName}"/>
+                                <TextBlock FontSize="10">
+                                    <TextBlock.Text>
+                                        <Binding Path="Departure" StringFormat="{}{0:dd.MM.yy HH:mm}"/>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <TextBlock FontSize="10">
+                                        <TextBlock.Text>
+                                            <Binding Path="Arrival" StringFormat="{}{0:dd.MM.yy HH:mm}"/>
+                                        </TextBlock.Text>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock FontSize="18" Text="{Binding Price, StringFormat='{}{0} р.'}" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding TransportName}" HorizontalAlignment="Right"/>
+                            </StackPanel>
+                            <Button Grid.Column="2" Command="{Binding AddToHistory}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100">Добавить</Button>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
 
         <Grid x:Name="placesSearchGrid" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Collapsed"
@@ -62,6 +189,11 @@
             </StackPanel>
             <ListBox x:Name="countriesListBox" Grid.Row="3" 
                      ItemsSource="{Binding SearchResultCountries}" Visibility="Collapsed">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -81,6 +213,11 @@
 
             <ListBox x:Name="regionsListBox" Grid.Row="3" 
                     ItemsSource="{Binding SearchResultRegions}" Visibility="Collapsed">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -100,6 +237,11 @@
 
             <ListBox x:Name="citiesListBox" Grid.Row="3" 
                     ItemsSource="{Binding SearchResultCities}" Visibility="Collapsed">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -115,9 +257,86 @@
             </ListBox>
         </Grid>
 
-        <Grid x:Name="historyhGrid" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Collapsed"
+        <Grid x:Name="historyhGrid" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Visible"
         DataContext="{Binding HistoryViewModel}">
-            <Label Content="Istoriya"></Label>
+            <Grid.Resources>
+                <ControlTemplate x:Key="StarToggleButton" TargetType="{x:Type ToggleButton}">
+                    <Canvas
+                    Width="15"
+                    Height="15"
+                    Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+                        <Path
+                        x:Name="ButtonPath"
+                        Width="15"
+                        Height="15"
+                        Canvas.Left="15"
+                        Canvas.Top="15"
+                        Data="F1 M 17.416,32.25L 32.910,32.25L 38,18L 43.089,32.25L 58.583,32.25L 45.679,41.494L 51.458,56L 38,48.083L 26.125,56L 30.597,41.710L 17.416,32.25 Z "
+                        Fill="Transparent"
+                        Stroke="Black"
+                        StrokeThickness="1"
+                        Stretch="Fill"/>
+                    </Canvas>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter TargetName="ButtonPath" Property="Fill" Value="Yellow"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="ButtonPath" Property="Stroke" Value="Red"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="История поездок"></Label>
+                <Button Grid.Column="1" Command="{Binding Refresh}">Обновить</Button>
+            </Grid>
+            <ListBox Grid.Row="1"
+                ItemsSource="{Binding UserEntries}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock FontSize="18" Text="{Binding RouteCitiesView.ToCityName}"/>
+                                <TextBlock FontSize="10">
+                                    <TextBlock.Text>
+                                        <Binding Path="RouteCitiesView.Departure" StringFormat="{}{0:dd.MM.yy HH:mm}"/>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <TextBlock FontSize="10">
+                                    <TextBlock.Text>
+                                        <Binding Path="RouteCitiesView.Arrival" StringFormat="{}{0:dd.MM.yy HH:mm}"/>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <CheckBox IsChecked="{Binding IsOneStar}" Template="{DynamicResource StarToggleButton}"/>
+                                <CheckBox IsChecked="{Binding IsTwoStar}" Template="{DynamicResource StarToggleButton}"/>
+                                <CheckBox IsChecked="{Binding IsThreeStar}" Template="{DynamicResource StarToggleButton}"/>
+                                <CheckBox IsChecked="{Binding IsFourStar}" Template="{DynamicResource StarToggleButton}"/>
+                                <CheckBox IsChecked="{Binding IsFiveStar}" Template="{DynamicResource StarToggleButton}"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
     </Grid>
 </Window>
