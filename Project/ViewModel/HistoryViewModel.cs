@@ -40,6 +40,14 @@ namespace TourAssist.ViewModel
                     {
                         UserEntries = new ObservableCollection<Entry>(
                             dbContext.Entries.Where((e) => e.UserIdUser == user.IdUser));
+
+                        foreach (var entry in UserEntries)
+                        {
+                            entry.Deleted += (s, a) =>
+                            {
+                                UserEntries.Remove(entry);
+                            };
+                        }
                     }
                 });
             }

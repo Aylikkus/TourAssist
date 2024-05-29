@@ -9,7 +9,7 @@
         Title="AdminScreen" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="200"/>
             <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -21,9 +21,21 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="userPanel" Grid.Column="0">
-            <Button Command="{Binding LogOut}">Выйти</Button>
-        </StackPanel>
+        <Grid x:Name="userPanel" Grid.Column="0" Grid.RowSpan="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="200"/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Image Source="{StaticResource UserLogo}" Width="200" Height="200" Stretch="Fill"/>
+            <StackPanel Grid.Row="1">
+                <Label Content="{Binding RoleName}"/>
+                <Label Content="{Binding User.Surname}"/>
+                <Label Content="{Binding User.Name}"/>
+                <Label Content="{Binding User.Patronymic}"/>
+            </StackPanel>
+            <Button Grid.Row="2" Command="{Binding LogOut}" VerticalContentAlignment="Bottom" Height="20" VerticalAlignment="Bottom">Выйти</Button>
+        </Grid>
         
         <Grid x:Name="countriesGrid" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>

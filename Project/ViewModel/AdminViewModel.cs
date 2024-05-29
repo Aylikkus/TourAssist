@@ -821,6 +821,26 @@ namespace TourAssist.ViewModel
             }
         }
 
+        public User? User
+        {
+            get
+            {
+                return AuthManager.CurrentUser;
+            }
+        }
+
+        public string RoleName
+        {
+            get
+            {
+                Userrole? role = AuthManager.CurrentRole;
+
+                if (role == null) return "";
+
+                return role.Name == "admin" ? "Администратор" : "Пользователь";
+            }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")

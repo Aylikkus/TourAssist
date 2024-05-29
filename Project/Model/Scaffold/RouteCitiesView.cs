@@ -27,4 +27,6 @@ public partial class RouteCitiesView
     public string TransportName { get; set; } = null!;
 
     public int TransportCapacity { get; set; }
+
+    public int ToCityPopularity { get; set; }
 }

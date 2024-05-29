@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -36,6 +37,23 @@ namespace TourAssist.Model.Scaffold
                         }
                     }
                 });
+            }
+        }
+
+        [NotMapped]
+        public List<Peculiarity> AllPeculiarities
+        {
+            get
+            {
+                using (TourismDbContext dbContext = new TourismDbContext())
+                {
+                    var joins = new List<PecularitiesCity>(dbContext.PecularitiesCities
+                        .Where(pc => pc.CityIdCity == ToCityId));
+                    var pecs = new List<Peculiarity>(dbContext.Peculiarities.ToList()
+                        .Where(p => joins.Where(j => j.PeculiarityIdPeculiarity == p.IdPeculiarity).Count() > 0));
+
+                    return pecs;
+                }
             }
         }
 

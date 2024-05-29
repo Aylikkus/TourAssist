@@ -40,7 +40,7 @@ namespace TourAssist.Model.Scaffold
             }
             else
             {
-                Rating = rating - 1;
+                Rating = rating == -3 ? null : rating - 1;
             }
 
             updateRating();
@@ -48,6 +48,45 @@ namespace TourAssist.Model.Scaffold
 
         [NotMapped]
         public bool IsOneStar
+        {
+            get
+            {
+                return Rating >= -3;
+            }
+            set
+            {
+                setRating(-3, value);
+            }
+        }
+
+        [NotMapped]
+        public bool IsTwoStar
+        {
+            get
+            {
+                return Rating >= -2;
+            }
+            set
+            {
+                setRating(-2, value);
+            }
+        }
+
+        [NotMapped]
+        public bool IsThreeStar
+        {
+            get
+            {
+                return Rating >= -1;
+            }
+            set
+            {
+                setRating(-1, value);
+            }
+        }
+
+        [NotMapped]
+        public bool IsFourStar
         {
             get
             {
@@ -60,7 +99,7 @@ namespace TourAssist.Model.Scaffold
         }
 
         [NotMapped]
-        public bool IsTwoStar
+        public bool IsFiveStar
         {
             get
             {
@@ -69,45 +108,6 @@ namespace TourAssist.Model.Scaffold
             set
             {
                 setRating(2, value);
-            }
-        }
-
-        [NotMapped]
-        public bool IsThreeStar
-        {
-            get
-            {
-                return Rating >= 3;
-            }
-            set
-            {
-                setRating(3, value);
-            }
-        }
-
-        [NotMapped]
-        public bool IsFourStar
-        {
-            get
-            {
-                return Rating >= 4;
-            }
-            set
-            {
-                setRating(4, value);
-            }
-        }
-
-        [NotMapped]
-        public bool IsFiveStar
-        {
-            get
-            {
-                return Rating >= 5;
-            }
-            set
-            {
-                setRating(5, value);
             }
         }
 
@@ -122,6 +122,26 @@ namespace TourAssist.Model.Scaffold
                 }
             }
         }
+
+        private RelayCommand? delete;
+        public RelayCommand Delete
+        {
+            get
+            {
+                return delete ??= new RelayCommand(obj =>
+                {
+                    using (TourismDbContext dbContext = new TourismDbContext())
+                    {
+                        dbContext.Entries.Remove(this);
+                        dbContext.SaveChanges();
+
+                        Deleted?.Invoke(this, new EventArgs());
+                    }
+                });
+            }
+        }
+
+        public event EventHandler? Deleted;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

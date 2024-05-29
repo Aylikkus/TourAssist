@@ -14,9 +14,21 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" DataContext="{Binding UserViewModel}">
-            <Button Command="{Binding LogOut}">Выйти</Button>
-        </StackPanel>
+        <Grid x:Name="userPanel" Grid.Column="0" Grid.RowSpan="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="200"/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Image Source="{StaticResource UserLogo}" Width="200" Height="200" Stretch="Fill"/>
+            <StackPanel Grid.Row="1">
+                <Label Content="{Binding UserViewModel.RoleName}"/>
+                <Label Content="{Binding UserViewModel.User.Surname}"/>
+                <Label Content="{Binding UserViewModel.User.Name}"/>
+                <Label Content="{Binding UserViewModel.User.Patronymic}"/>
+            </StackPanel>
+            <Button Grid.Row="2" Command="{Binding UserViewModel.LogOut}" VerticalContentAlignment="Bottom" Height="20" VerticalAlignment="Bottom">Выйти</Button>
+        </Grid>
 
         <StackPanel Grid.Column="1">
             <Button x:Name="openTourSearch" Click="openTourSearch_Click">Поиск путевок</Button>
@@ -257,7 +269,7 @@
             </ListBox>
         </Grid>
 
-        <Grid x:Name="historyhGrid" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Visible"
+        <Grid x:Name="historyhGrid" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Collapsed"
         DataContext="{Binding HistoryViewModel}">
             <Grid.Resources>
                 <ControlTemplate x:Key="StarToggleButton" TargetType="{x:Type ToggleButton}">
@@ -312,6 +324,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
+                                <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock FontSize="18" Text="{Binding RouteCitiesView.ToCityName}"/>
@@ -333,6 +346,7 @@
                                 <CheckBox IsChecked="{Binding IsFourStar}" Template="{DynamicResource StarToggleButton}"/>
                                 <CheckBox IsChecked="{Binding IsFiveStar}" Template="{DynamicResource StarToggleButton}"/>
                             </StackPanel>
+                            <Button Grid.Column="2" Command="{Binding Delete}" Height="20" VerticalAlignment="Bottom">Удалить</Button>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

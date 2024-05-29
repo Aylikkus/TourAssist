@@ -277,12 +277,14 @@ namespace TourAssist.Model
             List<Peculiarity> peculiarities;
             List<PecularitiesCountry> countryPecs;
             List<Country> countries;
+            List<CountryPopularityView> popularities;
 
             using (TourismDbContext dbContext = new TourismDbContext())
             {
                 peculiarities = dbContext.Peculiarities.ToList();
                 countryPecs = dbContext.PecularitiesCountries.ToList();
                 countries = dbContext.Countries.ToList();
+                popularities = dbContext.CountryPopularityViews.ToList();
             }
 
             // peculiarity_id -> peculiarity_description
@@ -319,7 +321,23 @@ namespace TourAssist.Model
 
             List<string> isoList = searchCountriesRecurs(ast.Head, map, revMap);
 
-            return countries.Where((c) => isoList.Contains(c.Iso31661)).ToList();
+            List<Country> result = new List<Country>();
+
+            foreach (var row in popularities)
+            {
+                if (isoList.Contains(row.Iso31661))
+                {
+                    result.Add(countries.Where((c) => c.Iso31661 == row.Iso31661).First());
+                    isoList.Remove(row.Iso31661);
+                }
+            }
+
+            foreach (var iso in isoList)
+            {
+                result.Add(countries.Where((c) => c.Iso31661 == iso).First());
+            }
+
+            return result;
         }
 
         // output: { id's }
@@ -470,12 +488,14 @@ namespace TourAssist.Model
             List<Peculiarity> peculiarities;
             List<PecularitiesRegion> regionPecs;
             List<Region> regions;
+            List<RegionPopularityView> popularities;
 
             using (TourismDbContext dbContext = new TourismDbContext())
             {
                 peculiarities = dbContext.Peculiarities.ToList();
                 regionPecs = dbContext.PecularitiesRegions.ToList();
                 regions = dbContext.Regions.ToList();
+                popularities = dbContext.RegionPopularityViews.ToList();
             }
 
             // peculiarity_id -> peculiarity_description
@@ -512,7 +532,23 @@ namespace TourAssist.Model
 
             List<int> idList = searchIdsRecurs(ast.Head, map, revMap);
 
-            return regions.Where((r) => idList.Contains(r.IdRegion)).ToList();
+            List<Region> result = new List<Region>();
+
+            foreach (var row in popularities)
+            {
+                if (idList.Contains(row.IdRegion))
+                {
+                    result.Add(regions.Where((r) => r.IdRegion == row.IdRegion).First());
+                    idList.Remove(row.IdRegion);
+                }
+            }
+
+            foreach (var id in idList)
+            {
+                result.Add(regions.Where((r) => r.IdRegion == id).First());
+            }
+
+            return result;
         }
 
         public List<City> SearchCities()
@@ -522,11 +558,14 @@ namespace TourAssist.Model
             List<PecularitiesCity> cityPecs;
             List<City> cities;
 
+            List<DestinationPopularityView> popularities;
+
             using (TourismDbContext dbContext = new TourismDbContext())
             {
                 peculiarities = dbContext.Peculiarities.ToList();
                 cityPecs = dbContext.PecularitiesCities.ToList();
                 cities = dbContext.Cities.ToList();
+                popularities = dbContext.DestinationPopularityViews.ToList();
             }
 
             // peculiarity_id -> peculiarity_description
@@ -563,7 +602,23 @@ namespace TourAssist.Model
 
             List<int> idList = searchIdsRecurs(ast.Head, map, revMap);
 
-            return cities.Where((c) => idList.Contains(c.IdCity)).ToList();
+            List<City> result = new List<City>();
+
+            foreach (var row in popularities)
+            {
+                if (idList.Contains(row.ToIdCity))
+                {
+                    result.Add(cities.Where((c) => c.IdCity == row.ToIdCity).First());
+                    idList.Remove(row.ToIdCity);
+                }
+            }
+
+            foreach(var id in idList)
+            {
+                result.Add(cities.Where((c) => c.IdCity == id).First());
+            }
+
+            return result;
         }
 
         public Interpreter(string query) 
@@ -575,6 +630,17 @@ namespace TourAssist.Model
             Country? toCountry, Region? toRegion, City? toCity)
         {
             if (fromCity == null) return new List<RouteCitiesView>();
+
+            User? user = AuthManager.CurrentUser;
+
+            if (user == null) return new List<RouteCitiesView>();
+
+            List<UserPreferenceView> preferences;
+
+            using (TourismDbContext dbContext = new TourismDbContext())
+            {
+                preferences = dbContext.UserPreferenceViews.Where((p) => p.IdUser == user.IdUser).ToList();
+            }
 
             if (toCity != null)
             {
@@ -594,8 +660,40 @@ namespace TourAssist.Model
                         c.RegionName == toRegion.FullName &&
                         c.CountryIso31661 == toRegion.CountryIso31661).ToList();
 
-                    return routes.Where((r) => cities.Find(
+                    var result = routes.Where((r) => cities.Find(
                         (c) => c.IdCity == r.ToCityId) != null).ToList();
+
+                    List<RouteCitiesView> negatives = new List<RouteCitiesView>();
+
+                    for (int i = 0; i < result.Count; i++)
+                    {
+                        double totalPref = 0;
+                        foreach (var pec in result[i].AllPeculiarities)
+                        {
+                            var prefRow = preferences.Where((p) => p.IdPeculiarity == pec.IdPeculiarity).FirstOrDefault();
+                            double? pref = prefRow == null ? 0 : prefRow.TotalPreference;
+
+                            if (pref != null)
+                                totalPref += pref.Value;
+                        }
+
+                        var temp = result[i];
+
+                        if (totalPref < 0)
+                        {
+                            result.RemoveAt(i);
+                            negatives.Insert(0, temp);
+                        }
+
+                        if (totalPref > 0)
+                        {
+                            result.RemoveAt(i);
+                            result.Insert(0, temp);
+                        }
+                    }
+
+                    result.AddRange(negatives);
+                    return result;
                 }
             }
             else if (toCountry != null)
@@ -607,8 +705,40 @@ namespace TourAssist.Model
                     List<CityCountryView> cities = dbContext.CityCountryViews.Where((c) =>
                         c.CountryIso31661 == toCountry.Iso31661).ToList();
 
-                    return routes.Where((r) => cities.Find(
+                    var result = routes.Where((r) => cities.Find(
                         (c) => c.IdCity == r.ToCityId) != null).ToList();
+
+                    List<RouteCitiesView> negatives = new List<RouteCitiesView>();
+
+                    for (int i = 0; i < result.Count; i++)
+                    {
+                        double totalPref = 0;
+                        foreach (var pec in result[i].AllPeculiarities)
+                        {
+                            var prefRow = preferences.Where((p) => p.IdPeculiarity == pec.IdPeculiarity).FirstOrDefault();
+                            double? pref = prefRow == null ? 0 : prefRow.TotalPreference;
+
+                            if (pref != null)
+                                totalPref += pref.Value;
+                        }
+
+                        var temp = result[i];
+
+                        if (totalPref < 0)
+                        {
+                            result.RemoveAt(i);
+                            negatives.Insert(0, temp);
+                        }
+
+                        if (totalPref > 0)
+                        {
+                            result.RemoveAt(i);
+                            result.Insert(0, temp);
+                        }
+                    }
+
+                    result.AddRange(negatives);
+                    return result;
                 }
             }
             else

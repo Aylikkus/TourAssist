@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TourAssist.Model;
+using TourAssist.Model.Scaffold;
 using TourAssist.View;
 using TourAssist.ViewModel.Utility;
 
@@ -24,6 +25,26 @@ namespace TourAssist.ViewModel
                     PopupService.OpenWindow(typeof(LoginScreen));
                     WindowClose?.Invoke(this, new EventArgs());
                 });
+            }
+        }
+
+        public User? User
+        {
+            get
+            {
+                return AuthManager.CurrentUser;
+            }
+        }
+
+        public string RoleName
+        {
+            get
+            {
+                Userrole? role = AuthManager.CurrentRole;
+
+                if (role == null) return "";
+
+                return role.Name == "admin" ? "Администратор" : "Пользователь";
             }
         }
 

@@ -44,6 +44,14 @@ public partial class TourismDbContext : DbContext
 
     public virtual DbSet<Userrole> Userroles { get; set; }
 
+    public virtual DbSet<DestinationPopularityView> DestinationPopularityViews { get; set; }
+
+    public virtual DbSet<RegionPopularityView> RegionPopularityViews { get; set; }
+
+    public virtual DbSet<CountryPopularityView> CountryPopularityViews { get; set; }
+
+    public virtual DbSet<UserPreferenceView> UserPreferenceViews { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         Configuration configuration = Configuration.GetConfiguration();
@@ -284,6 +292,7 @@ public partial class TourismDbContext : DbContext
             entity.Property(e => e.Price).HasPrecision(10, 2);
             entity.Property(e => e.ToCityName).HasMaxLength(45);
             entity.Property(e => e.TransportName).HasMaxLength(45);
+            entity.Property(e => e.ToCityPopularity).HasColumnName("ToCityPopularity");
         });
 
         modelBuilder.Entity<Transport>(entity =>
@@ -318,6 +327,47 @@ public partial class TourismDbContext : DbContext
                 .HasForeignKey(d => d.UserRoleIdUserRole)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_User_UserRole1");
+        });
+
+        modelBuilder.Entity<DestinationPopularityView>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("destinationpopularityview");
+
+            entity.Property(e => e.ToIdCity).HasColumnName("To_idCity");
+            entity.Property(e => e.ToCityPopularity).HasColumnName("ToCityPopularity");
+        });
+
+        modelBuilder.Entity<RegionPopularityView>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("regionpopularityview");
+
+            entity.Property(e => e.IdRegion).HasColumnName("idRegion");
+            entity.Property(e => e.ToRegionPopularity).HasColumnName("ToRegionPopularity");
+        });
+
+        modelBuilder.Entity<CountryPopularityView>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("countrypopularityview");
+
+            entity.Property(e => e.Iso31661).HasColumnName("ISO3166-1");
+            entity.Property(e => e.ToCountryPopularity).HasColumnName("ToCountryPopularity");
+        });
+
+        modelBuilder.Entity<UserPreferenceView>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("userpreferenceview");
+
+            entity.Property(e => e.IdPeculiarity).HasColumnName("idPeculiarity");
+            entity.Property(e => e.IdUser).HasColumnName("idUser");
+            entity.Property(e => e.TotalPreference).HasColumnName("TotalPreference");
         });
 
         modelBuilder.Entity<Userrole>(entity =>

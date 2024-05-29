@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:TourAssist"
              StartupUri="View/LoginScreen.xaml">
     <Application.Resources>
-         
+        <BitmapImage x:Key="UserLogo" UriSource="Media/user_logo.png"/>
     </Application.Resources>
 </Application>
