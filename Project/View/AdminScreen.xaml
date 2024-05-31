@@ -6,10 +6,10 @@
         xmlns:local="clr-namespace:TourAssist.View"
         xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="AdminScreen" Height="450" Width="800">
+        Title="Режим редактирования" Height="450" Width="800"
+        Style="{StaticResource DefaultWindowStyle}">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
             <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -21,23 +21,12 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="userPanel" Grid.Column="0" Grid.RowSpan="4">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="200"/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Image Source="{StaticResource UserLogo}" Width="200" Height="200" Stretch="Fill"/>
-            <StackPanel Grid.Row="1">
-                <Label Content="{Binding RoleName}"/>
-                <Label Content="{Binding User.Surname}"/>
-                <Label Content="{Binding User.Name}"/>
-                <Label Content="{Binding User.Patronymic}"/>
-            </StackPanel>
-            <Button Grid.Row="2" Command="{Binding LogOut}" VerticalContentAlignment="Bottom" Height="20" VerticalAlignment="Bottom">Выйти</Button>
-        </Grid>
+        <Image x:Name="logoImg" Source="{StaticResource Logo}" Grid.RowSpan="4" Grid.ColumnSpan="2"
+            VerticalAlignment="Center" HorizontalAlignment="Center"
+            Width="256" Height="256"/>
         
-        <Grid x:Name="countriesGrid" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2">
+        <Grid x:Name="countriesGrid" Grid.RowSpan="4" Grid.ColumnSpan="2"
+              Margin="5" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -49,7 +38,7 @@
             </Grid.RowDefinitions>
 
             <ListBox ItemsSource="{Binding Countries}"
-                     SelectedItem="{Binding SelectedCountry}" Grid.RowSpan="2">
+                     SelectedItem="{Binding SelectedCountry}" Grid.RowSpan="2" Margin="0,0,5,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -60,25 +49,28 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <StackPanel Grid.Column="1">
-                <TextBlock>Код ISO31661</TextBlock>
-                <TextBox Text="{Binding SelectedCountry.Iso31661}"/>
-                <TextBlock>Полное имя</TextBlock>
-                <TextBox Text="{Binding SelectedCountry.FullName}"/>
-                <TextBlock>Особенности</TextBlock>
-                <Label Content="{Binding SelectedCountryPeculiarities}"/>
-            </StackPanel>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="1">
+                <StackPanel Margin="5">
+                    <TextBlock Margin="0,0,0,2">Код ISO31661</TextBlock>
+                    <TextBox Margin="0,0,0,5" Text="{Binding SelectedCountry.Iso31661}"/>
+                    <TextBlock Margin="0,0,0,2">Полное имя</TextBlock>
+                    <TextBox Margin="0,0,0,5" Text="{Binding SelectedCountry.FullName}"/>
+                    <TextBlock Margin="0,0,0,2">Особенности</TextBlock>
+                    <TextBlock Margin="0,0,0,5" TextWrapping="WrapWithOverflow" Text="{Binding SelectedCountryPeculiarities}"/>
+                </StackPanel>
+            </ScrollViewer>
 
-            <StackPanel Grid.Column="1" Grid.Row="1">
-                <Button Content="Добавить" Command="{Binding AddCountry}"/>
-                <Button Content="Обновить" Command="{Binding UpdateCountry}"/>
-                <Button Content="Удалить" Command="{Binding RemoveCountry}"/>
-                <Button Content="Добавить особенность..." Command="{Binding AddCountryPeculiarity}"/>
-                <Button Content="Удалить особенность..." Command="{Binding RemoveCountryPeculiarity}"/>
+            <StackPanel Margin="5" Grid.Column="1" Grid.Row="1">
+                <Button Content="Добавить" Command="{Binding AddCountry}" Margin="0,0,0,5" FontWeight="Medium"/>
+                <Button Content="Обновить" Command="{Binding UpdateCountry}" Margin="0,0,0,5" FontWeight="Medium"/>
+                <Button Content="Удалить" Command="{Binding RemoveCountry}" Margin="0,0,0,5" FontWeight="Medium"/>
+                <Button Content="Добавить особенность..." Command="{Binding AddCountryPeculiarity}" Margin="0,0,0,5" FontWeight="Medium"/>
+                <Button Content="Удалить особенность..." Command="{Binding RemoveCountryPeculiarity}" Margin="0,0,0,5" FontWeight="Medium"/>
             </StackPanel>
         </Grid>
 
-        <Grid Visibility="Collapsed" x:Name="regionsGrid" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2">
+        <Grid Visibility="Collapsed" x:Name="regionsGrid" Grid.RowSpan="4" Grid.ColumnSpan="2"
+              Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -90,7 +82,7 @@
             </Grid.RowDefinitions>
 
             <ListBox ItemsSource="{Binding Regions}"
-             SelectedItem="{Binding SelectedRegion}" Grid.RowSpan="2">
+             SelectedItem="{Binding SelectedRegion}" Grid.RowSpan="2" Margin="0,0,5,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -101,26 +93,29 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <StackPanel Grid.Column="1">
-                <TextBlock>Название</TextBlock>
-                <TextBox Text="{Binding SelectedRegion.FullName}"/>
-                <TextBlock>Страна</TextBlock>
-                <Label Content="{Binding SelectedRegionCountry}"/>
-                <TextBlock>Особенности</TextBlock>
-                <Label Content="{Binding SelectedRegionPeculiarities}"/>
-            </StackPanel>
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="5">
+                    <TextBlock Margin="0,0,0,2">Название</TextBlock>
+                    <TextBox Text="{Binding SelectedRegion.FullName}" Margin="0,0,0,5"/>
+                    <TextBlock Margin="0,0,0,2">Страна</TextBlock>
+                    <TextBlock Margin="0,0,0,5" Text="{Binding SelectedRegionCountry}"/>
+                    <TextBlock Margin="0,0,0,2">Особенности</TextBlock>
+                    <TextBlock TextWrapping="WrapWithOverflow" Text="{Binding SelectedRegionPeculiarities}"/>
+                </StackPanel>
+            </ScrollViewer>
 
-            <StackPanel Grid.Column="1" Grid.Row="1">
-                <Button Content="Добавить" Command="{Binding AddRegion}"/>
-                <Button Content="Обновить" Command="{Binding UpdateRegion}"/>
-                <Button Content="Удалить" Command="{Binding RemoveRegion}"/>
-                <Button Content="Выбрать страну..." Command="{Binding SelectCountry}"/>
-                <Button Content="Добавить особенность..." Command="{Binding AddRegionPeculiarity}"/>
-                <Button Content="Удалить особенность..." Command="{Binding RemoveRegionPeculiarity}"/>
+            <StackPanel Grid.Column="1" Grid.Row="1" Margin="5">
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Добавить" Command="{Binding AddRegion}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Обновить" Command="{Binding UpdateRegion}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Удалить" Command="{Binding RemoveRegion}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Выбрать страну..." Command="{Binding SelectCountry}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Добавить особенность..." Command="{Binding AddRegionPeculiarity}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Удалить особенность..." Command="{Binding RemoveRegionPeculiarity}"/>
             </StackPanel>
         </Grid>
 
-        <Grid Visibility="Collapsed" x:Name="citiesGrid" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2">
+        <Grid Visibility="Collapsed" x:Name="citiesGrid" Grid.RowSpan="4" Grid.ColumnSpan="2"
+              Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -132,7 +127,7 @@
             </Grid.RowDefinitions>
 
             <ListBox ItemsSource="{Binding Cities}"
-                SelectedItem="{Binding SelectedCity}" Grid.RowSpan="2">
+                SelectedItem="{Binding SelectedCity}" Grid.RowSpan="2" Margin="0,0,5,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -142,28 +137,31 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <StackPanel Grid.Column="1">
-                <TextBlock>Название</TextBlock>
-                <TextBox Text="{Binding SelectedCity.FullName}"/>
-                <TextBlock>Регион</TextBlock>
-                <Label Content="{Binding SelectedCityRegion}"/>
-                <TextBlock>Страна</TextBlock>
-                <Label Content="{Binding SelectedCityCountry}"/>
-                <TextBlock>Особенности</TextBlock>
-                <Label Content="{Binding SelectedCityPeculiarities}"/>
-            </StackPanel>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="1">
+                <StackPanel Margin="5">
+                    <TextBlock Margin="0,0,0,2">Название</TextBlock>
+                    <TextBox Margin="0,0,0,5" Text="{Binding SelectedCity.FullName}"/>
+                    <TextBlock Margin="0,0,0,2">Регион</TextBlock>
+                    <TextBlock Margin="0,0,0,5" Text="{Binding SelectedCityRegion}"/>
+                    <TextBlock Margin="0,0,0,2">Страна</TextBlock>
+                    <TextBlock Margin="0,0,0,5" Text="{Binding SelectedCityCountry}"/>
+                    <TextBlock Margin="0,0,0,2">Особенности</TextBlock>
+                    <TextBlock TextWrapping="WrapWithOverflow" Margin="0,0,0,5" Text="{Binding SelectedCityPeculiarities}"/>
+                </StackPanel>
+            </ScrollViewer>
 
-            <StackPanel Grid.Column="1" Grid.Row="1">
-                <Button Content="Добавить" Command="{Binding AddCity}"/>
-                <Button Content="Обновить" Command="{Binding UpdateCity}"/>
-                <Button Content="Удалить" Command="{Binding RemoveCity}"/>
-                <Button Content="Выбрать регион..." Command="{Binding SelectRegion}"/>
-                <Button Content="Добавить особенность..." Command="{Binding AddCityPeculiarity}"/>
-                <Button Content="Удалить особенность..." Command="{Binding RemoveCityPeculiarity}"/>
+            <StackPanel Grid.Column="1" Grid.Row="1" Margin="5">
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Добавить" Command="{Binding AddCity}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Обновить" Command="{Binding UpdateCity}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Удалить" Command="{Binding RemoveCity}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Выбрать регион..." Command="{Binding SelectRegion}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Добавить особенность..." Command="{Binding AddCityPeculiarity}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Удалить особенность..." Command="{Binding RemoveCityPeculiarity}"/>
             </StackPanel>
         </Grid>
 
-        <Grid Visibility="Collapsed" x:Name="peculiaritiesGrid" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2">
+        <Grid Visibility="Collapsed" x:Name="peculiaritiesGrid" Grid.RowSpan="4" Grid.ColumnSpan="2"
+              Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -175,7 +173,7 @@
             </Grid.RowDefinitions>
 
             <ListBox ItemsSource="{Binding Peculiarities}"
-        SelectedItem="{Binding SelectedPeculiarity}" Grid.RowSpan="2">
+                SelectedItem="{Binding SelectedPeculiarity}" Grid.RowSpan="2" Margin="0,0,5,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -185,19 +183,20 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <StackPanel Grid.Column="1">
-                <TextBlock>Описание</TextBlock>
-                <TextBox Text="{Binding SelectedPeculiarity.Description}"/>
+            <StackPanel Grid.Column="1" Margin="5">
+                <TextBlock Margin="0,0,0,2">Описание</TextBlock>
+                <TextBox Text="{Binding SelectedPeculiarity.Description}" Margin="0,0,0,5"/>
             </StackPanel>
 
-            <StackPanel Grid.Column="1" Grid.Row="1">
-                <Button Content="Добавить" Command="{Binding AddPeculiarity}"/>
-                <Button Content="Обновить" Command="{Binding UpdatePeculiarity}"/>
-                <Button Content="Удалить" Command="{Binding RemovePeculiarity}"/>
+            <StackPanel Grid.Column="1" Grid.Row="1" Margin="5">
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Добавить" Command="{Binding AddPeculiarity}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Обновить" Command="{Binding UpdatePeculiarity}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Удалить" Command="{Binding RemovePeculiarity}"/>
             </StackPanel>
         </Grid>
 
-        <Grid Visibility="Collapsed" x:Name="routesGrid" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2">
+        <Grid Visibility="Collapsed" x:Name="routesGrid" Grid.RowSpan="4" Grid.ColumnSpan="2"
+              Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -209,7 +208,7 @@
             </Grid.RowDefinitions>
 
             <ListBox ItemsSource="{Binding Routes}"
-                SelectedItem="{Binding SelectedRoute}" Grid.RowSpan="2">
+                SelectedItem="{Binding SelectedRoute}" Grid.RowSpan="2" Margin="0,0,5,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -234,39 +233,47 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <StackPanel Grid.Column="1">
-                <TextBlock>Из</TextBlock>
-                <Label Content="{Binding SelectedRoute.FromCityName}"/>
-                <TextBlock>Куда</TextBlock>
-                <Label Content="{Binding SelectedRoute.ToCityName}"/>
-                <TextBlock>Отбытие</TextBlock>
-                <xceed:DateTimePicker Value="{Binding SelectedRoute.Departure}"/>
-                <TextBlock>Прибытие</TextBlock>
-                <xceed:DateTimePicker Value="{Binding SelectedRoute.Arrival}"/>
-                <TextBlock>Цена</TextBlock>
-                <xceed:DecimalUpDown Value="{Binding SelectedRoute.Price}"/>
-                <TextBlock>Транспорт</TextBlock>
-                <Label Content="{Binding SelectedRoute.TransportName}"/>
-            </StackPanel>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="1">
+                <StackPanel Margin="5">
+                    <TextBlock Margin="0,0,0,2">Из</TextBlock>
+                    <TextBlock Margin="0,0,0,5" Text="{Binding SelectedRoute.FromCityName}"/>
+                    <TextBlock Margin="0,0,0,2">Куда</TextBlock>
+                    <TextBlock Margin="0,0,0,5" Text="{Binding SelectedRoute.ToCityName}"/>
+                    <TextBlock Margin="0,0,0,2">Отбытие</TextBlock>
+                    <xceed:DateTimePicker ShowButtonSpinner="False" Minimum="01.01.2023" Margin="0,0,0,5" Value="{Binding SelectedRoute.Departure}"/>
+                    <TextBlock Margin="0,0,0,2">Прибытие</TextBlock>
+                    <xceed:DateTimePicker ShowButtonSpinner="False" Minimum="01.01.2023" Margin="0,0,0,5" Value="{Binding SelectedRoute.Arrival}"/>
+                    <TextBlock Margin="0,0,0,2">Цена</TextBlock>
+                    <xceed:DecimalUpDown ShowButtonSpinner="False" Margin="0,0,0,5" Value="{Binding SelectedRoute.Price}"/>
+                    <TextBlock Margin="0,0,0,2">Транспорт</TextBlock>
+                    <TextBlock Margin="0,0,0,5" Text="{Binding SelectedRoute.TransportName}"/>
+                </StackPanel>
+            </ScrollViewer>
 
-            <StackPanel Grid.Column="1" Grid.Row="1">
-                <Button Content="Добавить" Command="{Binding AddRoute}"/>
-                <Button Content="Обновить" Command="{Binding UpdateRoute}"/>
-                <Button Content="Удалить" Command="{Binding RemoveRoute}"/>
-                <Button Content="Выбрать город отбытия..." Command="{Binding SelectFromCity}"/>
-                <Button Content="Выбрать город прибытия..." Command="{Binding SelectToCity}"/>
-                <Button Content="Выбрать транспорт..." Command="{Binding SelectTransport}"/>
+            <StackPanel Grid.Column="1" Grid.Row="1" Margin="5">
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Добавить" Command="{Binding AddRoute}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Обновить" Command="{Binding UpdateRoute}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Удалить" Command="{Binding RemoveRoute}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Выбрать город отбытия..." Command="{Binding SelectFromCity}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Выбрать город прибытия..." Command="{Binding SelectToCity}"/>
+                <Button Margin="0,0,0,5" FontWeight="Medium" Content="Выбрать транспорт..." Command="{Binding SelectTransport}"/>
             </StackPanel>
         </Grid>
 
-        <StackPanel Grid.Column="3" Grid.RowSpan="4">
-            <TextBlock>Редактирование</TextBlock>
-            <Button x:Name="countriesBtn" Content="Страны" Click="countriesBtn_Click"/>
-            <Button x:Name="regionsBtn" Content="Регионы" Click="regionsBtn_Click"/>
-            <Button x:Name="citiesBtn" Content="Города" Click="citiesBtn_Click"/>
-            <Button x:Name="peculiaritiesBtn" Content="Особенности" Click="peculiaritiesBtn_Click"/>
-            <Button x:Name="routesBtn" Content="Маршруты" Click="routesBtn_Click"/>
-        </StackPanel>
+        <Grid Grid.Column="2" Grid.RowSpan="4" Margin="25,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button Style="{StaticResource PanelButton}" Grid.Row="0" x:Name="countriesBtn" Content="Страны" Click="countriesBtn_Click"/>
+            <Button Style="{StaticResource PanelButton}" Grid.Row="1" x:Name="regionsBtn" Content="Регионы" Click="regionsBtn_Click"/>
+            <Button Style="{StaticResource PanelButton}" Grid.Row="2" x:Name="citiesBtn" Content="Города" Click="citiesBtn_Click"/>
+            <Button Style="{StaticResource PanelButton}" Grid.Row="3" x:Name="peculiaritiesBtn" Content="Особенности" Click="peculiaritiesBtn_Click"/>
+            <Button Style="{StaticResource PanelButton}" Grid.Row="4" x:Name="routesBtn" Content="Маршруты" Click="routesBtn_Click"/>
+        </Grid>
 
     </Grid>
 </Window>

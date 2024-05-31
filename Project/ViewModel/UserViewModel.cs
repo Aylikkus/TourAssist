@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using TourAssist.Model;
 using TourAssist.Model.Scaffold;
 using TourAssist.View;
@@ -28,6 +29,18 @@ namespace TourAssist.ViewModel
             }
         }
 
+        private RelayCommand? showAdminPanel;
+        public RelayCommand ShowAdminPanel
+        {
+            get
+            {
+                return showAdminPanel ??= new RelayCommand(obj =>
+                {
+                    PopupService.OpenWindow(typeof(AdminScreen));
+                });
+            }
+        }
+
         public User? User
         {
             get
@@ -45,6 +58,16 @@ namespace TourAssist.ViewModel
                 if (role == null) return "";
 
                 return role.Name == "admin" ? "Администратор" : "Пользователь";
+            }
+        }
+
+        public Visibility IsAdmin
+        {
+            get
+            {
+                Userrole? role = AuthManager.CurrentRole;
+
+                return role?.Name == "admin" ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 

@@ -6,14 +6,33 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Media\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Media\Fonts\Roboto-Black.ttf" />
+    <None Remove="Media\Fonts\Roboto-BlackItalic.ttf" />
+    <None Remove="Media\Fonts\Roboto-Bold.ttf" />
+    <None Remove="Media\Fonts\Roboto-BoldItalic.ttf" />
+    <None Remove="Media\Fonts\Roboto-Italic.ttf" />
+    <None Remove="Media\Fonts\Roboto-Light.ttf" />
+    <None Remove="Media\Fonts\Roboto-LightItalic.ttf" />
+    <None Remove="Media\Fonts\Roboto-Medium.ttf" />
+    <None Remove="Media\Fonts\Roboto-MediumItalic.ttf" />
+    <None Remove="Media\Fonts\Roboto-Regular.ttf" />
+    <None Remove="Media\Fonts\Roboto-Thin.ttf" />
+    <None Remove="Media\Fonts\Roboto-ThinItalic.ttf" />
+    <None Remove="Media\icon.ico" />
+    <None Remove="Media\icon.png" />
     <None Remove="Media\user_logo.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.0" />
+    <Content Include="Media\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FuzzySharp" Version="2.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,6 +41,48 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WpfToolkit\Src\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.NET5.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Media\Fonts\Roboto-Black.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\Fonts\Roboto-BlackItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\Fonts\Roboto-Bold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\Fonts\Roboto-BoldItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\Fonts\Roboto-Italic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\Fonts\Roboto-Light.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\Fonts\Roboto-LightItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\Fonts\Roboto-Medium.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\Fonts\Roboto-MediumItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\Fonts\Roboto-Regular.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\Fonts\Roboto-Thin.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\Fonts\Roboto-ThinItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\icon.ico" />
+    <Resource Include="Media\icon.png" />
     <Resource Include="Media\user_logo.png" />
   </ItemGroup>
 

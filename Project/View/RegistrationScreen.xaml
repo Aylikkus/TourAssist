@@ -4,19 +4,38 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TourAssist.View"
+        xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="RegistrationScreen" Height="450" Width="800">
-    <StackPanel>
-        <TextBlock>Логин</TextBlock>
-        <TextBox TextWrapping="Wrap" Text="{Binding Login}" Width="120"/>
-        <TextBlock>Пароль</TextBlock>
-        <TextBox TextWrapping="Wrap" Text="{Binding Password}" Width="120"/>
-        <TextBlock>Имя</TextBlock>
-        <TextBox TextWrapping="Wrap" Text="{Binding Name}" Width="120"/>
-        <TextBlock>Фамилия</TextBlock>
-        <TextBox TextWrapping="Wrap" Text="{Binding Surname}" Width="120"/>
-        <TextBlock>Дата рождения</TextBlock>
-        <Calendar DisplayDate="{Binding DateTimeOfBirth}"/>
-        <Button Content="Зарегистрироваться" Command="{Binding Register}"/>
-    </StackPanel>
+        ResizeMode="NoResize"
+        SizeToContent="Width"
+        Title="Регистрация" Height="250" Width="Auto"
+        Style="{StaticResource DefaultWindowStyle}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="120"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Image Source="{StaticResource UserLogo}" Width="115" Height="115" Stretch="Fill"/>
+            <StackPanel Margin="5" Grid.Column="1">
+                <xceed:WatermarkTextBox Watermark="Логин" TextWrapping="Wrap" Text="{Binding Login}" Margin="0,0,0,5"/>
+                <xceed:WatermarkTextBox Watermark="Пароль" TextWrapping="Wrap" Text="{Binding Password}" Margin="0,0,0,5"/>
+                <xceed:WatermarkTextBox Watermark="Имя" TextWrapping="Wrap" Text="{Binding Name}" Margin="0,0,0,5"/>
+                <xceed:WatermarkTextBox Watermark="Фамилия" TextWrapping="Wrap" Text="{Binding Surname}" Margin="0,0,0,5"/>
+            </StackPanel>
+            <Button IsDefault="True" BorderThickness="0" Background="CornflowerBlue" Foreground="white" Style="{DynamicResource LoginButtonStyle}" Margin="8" Grid.Row="1" Grid.ColumnSpan="2" Content="Зарегистрироваться" Command="{Binding Register}" FontSize="18" FontWeight="Medium"/>
+        </Grid>
+        <Grid Margin="5" Grid.Column="1" HorizontalAlignment="Left">
+            <Label Content="Дата рождения" Margin="0,0,0,5"/>
+            <Calendar DisplayDate="{Binding DateTimeOfBirth}" VerticalAlignment="Bottom"/>
+        </Grid>
+    </Grid>
 </Window>

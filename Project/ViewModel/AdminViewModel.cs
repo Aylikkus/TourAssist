@@ -807,40 +807,6 @@ namespace TourAssist.ViewModel
 
         #endregion
 
-        private RelayCommand? logOut;
-        public RelayCommand LogOut
-        {
-            get
-            {
-                return logOut ??= new RelayCommand(obj =>
-                {
-                    AuthManager.LogOut();
-                    PopupService.OpenWindow(typeof(LoginScreen));
-                    WindowClose?.Invoke(this, new EventArgs());
-                });
-            }
-        }
-
-        public User? User
-        {
-            get
-            {
-                return AuthManager.CurrentUser;
-            }
-        }
-
-        public string RoleName
-        {
-            get
-            {
-                Userrole? role = AuthManager.CurrentRole;
-
-                if (role == null) return "";
-
-                return role.Name == "admin" ? "Администратор" : "Пользователь";
-            }
-        }
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -852,6 +818,7 @@ namespace TourAssist.ViewModel
 
         public AdminViewModel() 
         {
+            
             fetchDb();
         }
     }

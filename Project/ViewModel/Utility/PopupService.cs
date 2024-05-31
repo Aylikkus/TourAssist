@@ -27,7 +27,7 @@ namespace TourAssist.ViewModel.Utility
 
         public static void ShowMessage(string message)
         {
-            MessageBox.Show(message);
+            View.MessageBox.Show(message);
         }
 
         public static T? GetDialogResult<T>(IDialogView<T> dialog)

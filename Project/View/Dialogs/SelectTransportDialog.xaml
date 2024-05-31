@@ -4,30 +4,44 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TourAssist.View"
+        xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="Выберите транспорт" 
-        MinHeight="200" 
-        MinWidth="300"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        SizeToContent="WidthAndHeight">
+        Width="300" Height="300">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="99*"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <DataGrid ItemsSource="{Binding Transports}" 
-                  SelectedItem="{Binding SelectedTransport}" 
-                  IsReadOnly="True" Grid.ColumnSpan="2">
-        </DataGrid>
+        <ListBox ItemsSource="{Binding Transports}" 
+              SelectedItem="{Binding SelectedTransport}"
+             Margin="0,0,0,5" MouseDoubleClick="ListBox_MouseDoubleClick">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock FontSize="18" Text="{Binding Name}"/>
+                        <TextBlock Text="{Binding Capacity, StringFormat='{}Вместимость - {0} чел.'}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.ColumnSpan="2" Margin="150,159,0,0" Grid.RowSpan="2">
-            <Button x:Name="okButton" Width="70" Height="25" Margin="5,0,0,0" IsDefault="True" Click="okButton_Click">OK</Button>
-            <Button x:Name="CancelButton" Width="70" Height="25" Margin="5,0,0,0" IsCancel="True">Отмена</Button>
-        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <xceed:WatermarkTextBox Watermark="Поиск..." Margin="5,2,5,2" Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Grid.Column="1" x:Name="okButton" Width="70" Height="25" Margin="5,0,0,0" IsDefault="True" Click="okButton_Click">OK</Button>
+            <Button Grid.Column="2"  x:Name="CancelButton" Width="70" Height="25" Margin="5,0,0,0" IsCancel="True">Отмена</Button>
+        </Grid>
     </Grid>
 </Window>

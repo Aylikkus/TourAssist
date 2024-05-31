@@ -42,6 +42,8 @@ namespace TourAssist.ViewModel
 
                 ToRegion = null;
                 ToCity = null;
+
+                OnPropertyChanged(nameof(ToRoute));
             }
         }
 
@@ -68,6 +70,8 @@ namespace TourAssist.ViewModel
                 }
 
                 ToCity = null;
+
+                OnPropertyChanged(nameof(ToRoute));
             }
         }
 
@@ -99,6 +103,27 @@ namespace TourAssist.ViewModel
                         }
                     }
                 }
+
+                OnPropertyChanged(nameof(ToRoute));
+            }
+        }
+
+        public string ToRoute
+        {
+            get
+            {
+                string res = null!;
+
+                if (ToCountry != null)
+                    res += ToCountry.FullName;
+
+                if (ToRegion != null)
+                    res += "\n" + ToRegion.FullName;
+
+                if (ToCity != null)
+                    res += "\n" + ToCity.FullName;
+
+                return res;
             }
         }
 

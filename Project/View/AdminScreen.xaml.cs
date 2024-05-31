@@ -36,6 +36,7 @@ namespace TourAssist.View
 
         private void countriesBtn_Click(object sender, RoutedEventArgs e)
         {
+            logoImg.Visibility = Visibility.Collapsed;
             countriesGrid.Visibility = Visibility.Visible;
             regionsGrid.Visibility = Visibility.Collapsed;
             citiesGrid.Visibility = Visibility.Collapsed;
@@ -45,6 +46,7 @@ namespace TourAssist.View
 
         private void regionsBtn_Click(object sender, RoutedEventArgs e)
         {
+            logoImg.Visibility = Visibility.Collapsed;
             countriesGrid.Visibility= Visibility.Collapsed;
             regionsGrid.Visibility= Visibility.Visible;
             citiesGrid.Visibility = Visibility.Collapsed;
@@ -54,6 +56,7 @@ namespace TourAssist.View
 
         private void citiesBtn_Click(object sender, RoutedEventArgs e)
         {
+            logoImg.Visibility = Visibility.Collapsed;
             countriesGrid.Visibility = Visibility.Collapsed;
             regionsGrid.Visibility = Visibility.Collapsed;
             citiesGrid.Visibility = Visibility.Visible;
@@ -63,6 +66,7 @@ namespace TourAssist.View
 
         private void peculiaritiesBtn_Click(object sender, RoutedEventArgs e)
         {
+            logoImg.Visibility = Visibility.Collapsed;
             countriesGrid.Visibility = Visibility.Collapsed;
             regionsGrid.Visibility = Visibility.Collapsed;
             citiesGrid.Visibility = Visibility.Collapsed;
@@ -72,6 +76,7 @@ namespace TourAssist.View
 
         private void routesBtn_Click(object sender, RoutedEventArgs e)
         {
+            logoImg.Visibility = Visibility.Collapsed;
             countriesGrid.Visibility = Visibility.Collapsed;
             regionsGrid.Visibility = Visibility.Collapsed;
             citiesGrid.Visibility = Visibility.Collapsed;

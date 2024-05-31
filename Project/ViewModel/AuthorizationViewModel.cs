@@ -16,7 +16,7 @@ namespace TourAssist.ViewModel
         private string name = null!;
         private string surname = null!;
         private bool rememberMe = false;
-        private DateOnly dateOfBirth = DateOnly.FromDateTime(DateTime.Now);
+        private DateOnly dateOfBirth = DateOnly.FromDateTime(DateTime.Now).AddYears(-18);
 
         public string Login
         { 
@@ -134,6 +134,12 @@ namespace TourAssist.ViewModel
             {
                 return tryLogIntoApp ??= new RelayCommand(obj =>
                 {
+                    if (Login == null || Password == null)
+                    {
+                        PopupService.ShowMessage("Введите логин и пароль.");
+                        return;
+                    }
+
                     if (AuthManager.Authorize(Login, Password, RememberMe) == false)
                     {
                         PopupService.ShowMessage("Не удалось войти. Указан неверный логин/пароль.");
@@ -155,21 +161,10 @@ namespace TourAssist.ViewModel
             if (user == null || role == null)
                 return;
 
-            switch (role.Name)
-            {
-                case "admin":
-                    var adminScreen = new AdminScreen();
-                    adminScreen.Show();
-                    foreach (Window w in Application.Current.Windows)
-                        if (w is not AdminScreen) w.Close();
-                    break;
-                case "guest":
-                    var userScreen = new UserScreen();
-                    userScreen.Show();
-                    foreach (Window w in Application.Current.Windows)
-                        if (w is not UserScreen) w.Close();
-                    break;
-            }
+            var userScreen = new UserScreen();
+            userScreen.Show();
+            foreach (Window w in Application.Current.Windows)
+                if (w is not UserScreen) w.Close();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

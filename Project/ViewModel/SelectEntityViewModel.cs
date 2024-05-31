@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FuzzySharp;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,9 +27,32 @@ namespace TourAssist.ViewModel
         private ObservableCollection<Peculiarity> peculiarities;
         private ObservableCollection<Transport> transports;
 
+        private string query;
+
+        private ObservableCollection<T> filterBy<T>(ObservableCollection<T> values, Func<T, string> param)
+        {
+            var filtered = new ObservableCollection<T>();
+
+            foreach (var value in values)
+            {
+                if (Fuzz.Ratio(Query.ToLowerInvariant(), param(value).ToLowerInvariant()) > 50)
+                    filtered.Add(value);
+            }
+
+            return filtered;
+        }
+
         public ObservableCollection<Country> Countries
         {
-            get { return countries; }
+            get 
+            {
+                if (Query != null && Query != "")
+                {
+                    return filterBy(countries, (c) => c.FullName);
+                }
+
+                return countries; 
+            }
             private set
             {
                 countries = value;
@@ -48,7 +72,15 @@ namespace TourAssist.ViewModel
 
         public ObservableCollection<Region> Regions
         {
-            get { return regions; }
+            get 
+            {
+                if (Query != null && Query != "")
+                {
+                    return filterBy(regions, (r) => r.FullName);
+                }
+
+                return regions; 
+            }
             private set
             {
                 regions = value;
@@ -68,7 +100,15 @@ namespace TourAssist.ViewModel
 
         public ObservableCollection<City> Cities
         {
-            get { return cities; }
+            get 
+            {
+                if (Query != null && Query != "")
+                {
+                    return filterBy(cities, (c) => c.FullName);
+                }
+
+                return cities; 
+            }
             private set
             {
                 cities = value;
@@ -88,7 +128,15 @@ namespace TourAssist.ViewModel
 
         public ObservableCollection<Peculiarity> Peculiarities
         {
-            get { return peculiarities; }
+            get 
+            {
+                if (Query != null && Query != "")
+                {
+                    return filterBy(peculiarities, (p) => p.Description);
+                }
+
+                return peculiarities; 
+            }
             private set
             {
                 peculiarities = value;
@@ -108,7 +156,15 @@ namespace TourAssist.ViewModel
 
         public ObservableCollection<Transport> Transports
         {
-            get { return transports; }
+            get 
+            {
+                if (Query != null && Query != "")
+                {
+                    return filterBy(transports, (t) => t.Name);
+                }
+
+                return transports; 
+            }
             private set
             {
                 transports = value;
@@ -123,6 +179,22 @@ namespace TourAssist.ViewModel
             {
                 selectedTransport = value;
                 OnPropertyChanged(nameof(SelectedTransport));
+            }
+        }
+
+        public string Query
+        {
+            get { return query; }
+            set
+            {
+                query = value;
+                OnPropertyChanged(nameof(Query));
+
+                OnPropertyChanged(nameof(Cities));
+                OnPropertyChanged(nameof(Regions));
+                OnPropertyChanged(nameof(Countries));
+                OnPropertyChanged(nameof(Peculiarities));
+                OnPropertyChanged(nameof(Transports));
             }
         }
 
@@ -199,6 +271,7 @@ namespace TourAssist.ViewModel
             cities = new ObservableCollection<City>();
             peculiarities = new ObservableCollection<Peculiarity>();
             transports = new ObservableCollection<Transport>();
+            query = "";
         }
     }
 }

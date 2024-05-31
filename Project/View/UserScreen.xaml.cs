@@ -41,6 +41,7 @@ namespace TourAssist.View
 
         private void openTourSearch_Click(object sender, RoutedEventArgs e)
         {
+            logoImg.Visibility = Visibility.Collapsed;
             tourSearchGrid.Visibility = Visibility.Visible;
             placesSearchGrid.Visibility = Visibility.Collapsed;
             historyhGrid.Visibility = Visibility.Collapsed;
@@ -48,6 +49,7 @@ namespace TourAssist.View
 
         private void openPlacesSearch_Click(object sender, RoutedEventArgs e)
         {
+            logoImg.Visibility = Visibility.Collapsed;
             tourSearchGrid.Visibility = Visibility.Collapsed;
             placesSearchGrid.Visibility = Visibility.Visible;
             historyhGrid.Visibility = Visibility.Collapsed;
@@ -55,6 +57,7 @@ namespace TourAssist.View
 
         private void openHistory_Click(object sender, RoutedEventArgs e)
         {
+            logoImg.Visibility = Visibility.Collapsed;
             tourSearchGrid.Visibility = Visibility.Collapsed;
             placesSearchGrid.Visibility = Visibility.Collapsed;
             historyhGrid.Visibility = Visibility.Visible;

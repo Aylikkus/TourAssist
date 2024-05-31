@@ -3,15 +3,37 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="LoginScreen" Height="450" Width="800">
-    <StackPanel>
-        <TextBlock>Логин</TextBlock>
-        <TextBox TextWrapping="Wrap" Text="{Binding Login}" Width="120"/>
-        <TextBlock>Пароль</TextBlock>
-        <TextBox TextWrapping="Wrap" Text="{Binding Password}" Width="120"/>
-        <CheckBox Content="Запомнить меня" IsChecked="{Binding RememberMe}"/>
-        <Button Content="Зарегистрироваться" Command="{Binding OpenRegistration}"/>
-        <Button Content="Войти" Command="{Binding TryLogIntoApp}"/>
-    </StackPanel>
+        Title="Авторизация" Height="170" Width="300"
+        ResizeMode="NoResize"
+        Style="{StaticResource DefaultWindowStyle}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Image Source="{StaticResource UserLogo}" Width="75" Height="75" Stretch="Fill"/>
+        <StackPanel Grid.Column="1" Margin="5">
+            <xceed:WatermarkTextBox x:Name="tb" Watermark="Логин" TextWrapping="Wrap" Text="{Binding Login}" Margin="0,0,0,5"/>
+            <xceed:WatermarkPasswordBox Watermark="Пароль" x:Name="pwdBox" PasswordChanged="PasswordBox_PasswordChanged" Margin="0,0,0,5"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <CheckBox IsChecked="{Binding RememberMe}" VerticalAlignment="Center" VerticalContentAlignment="Bottom">
+                    <TextBlock Text="Запомнить" VerticalAlignment="Bottom"/>
+                </CheckBox>
+                <TextBlock Grid.Column="1" HorizontalAlignment="Right">
+                    <Hyperlink Command="{Binding OpenRegistration}">Регистрация</Hyperlink>
+                </TextBlock>
+            </Grid>
+        </StackPanel>
+        <Button IsDefault="True" BorderThickness="0" Background="CornflowerBlue" Foreground="white" Style="{DynamicResource LoginButtonStyle}" Margin="5" Grid.Row="1" Grid.ColumnSpan="2" Content="Войти" Command="{Binding TryLogIntoApp}" FontSize="18" FontWeight="Medium"/>
+    </Grid>
 </Window>

@@ -20,11 +20,19 @@ namespace TourAssist.View
     /// </summary>
     public partial class LoginScreen : Window
     {
+        AuthorizationViewModel viewModel;
+
         public LoginScreen()
         {
             InitializeComponent();
 
-            DataContext = new AuthorizationViewModel();
+            viewModel = new AuthorizationViewModel();
+            DataContext = viewModel;
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            viewModel.Password = pwdBox.Password;
         }
     }
 }
