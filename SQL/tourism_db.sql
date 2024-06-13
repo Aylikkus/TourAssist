@@ -280,6 +280,23 @@ CREATE  OR REPLACE VIEW `CityCountryView` AS
 SELECT idCity, City.FullName, Region.`Country_ISO3166-1`, Region.Fullname AS 'RegionName' From City
 INNER JOIN Region ON Region_idRegion = Region.idRegion;
 
+
+-- -----------------------------------------------------
+-- View `tourism_db`.`DestinationPopularityView`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `tourism_db`.`DestinationPopularityView`;
+USE `tourism_db`;
+CREATE  OR REPLACE VIEW DestinationPopularityView AS
+SELECT City.idCity AS "To_idCity", 0 AS "ToCityPopularity" FROM City
+WHERE NOT EXISTS (SELECT Route.To_idCity FROM Entry
+INNER JOIN Route ON Route.idRoute = Route_idRoute
+WHERE Route.To_idCity = City.idCity)
+UNION ALL
+SELECT Route.To_idCity, COUNT(*) AS "ToCityPopularity" FROM Entry
+INNER JOIN Route ON Route.idRoute = Route_idRoute
+GROUP BY To_idCity
+ORDER BY ToCityPopularity;
+
 -- -----------------------------------------------------
 -- View `tourism_db`.`RouteCitiesView`
 -- -----------------------------------------------------
@@ -299,22 +316,6 @@ INNER JOIN City AS FromCity ON From_idCity = FromCity.idCity
 INNER JOIN City AS ToCity ON To_idCity = ToCity.idCity
 INNER JOIN Transport ON Transport_idTransport = Transport.idTransport
 INNER JOIN DestinationPopularityView ON DestinationPopularityView.To_idCity = ToCity.idCity
-ORDER BY ToCityPopularity;
-
--- -----------------------------------------------------
--- View `tourism_db`.`DestinationPopularityView`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `tourism_db`.`DestinationPopularityView`;
-USE `tourism_db`;
-CREATE  OR REPLACE VIEW DestinationPopularityView AS
-SELECT City.idCity AS "To_idCity", 0 AS "ToCityPopularity" FROM City
-WHERE NOT EXISTS (SELECT Route.To_idCity FROM Entry
-INNER JOIN Route ON Route.idRoute = Route_idRoute
-WHERE Route.To_idCity = City.idCity)
-UNION ALL
-SELECT Route.To_idCity, COUNT(*) AS "ToCityPopularity" FROM Entry
-INNER JOIN Route ON Route.idRoute = Route_idRoute
-GROUP BY To_idCity
 ORDER BY ToCityPopularity;
 
 -- -----------------------------------------------------
