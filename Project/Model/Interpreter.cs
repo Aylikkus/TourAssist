@@ -325,9 +325,9 @@ namespace TourAssist.Model
 
             foreach (var row in popularities)
             {
-                if (isoList.Contains(row.Iso31661))
+                if (row.ToCountryPopularity != 0 && isoList.Contains(row.Iso31661))
                 {
-                    result.Add(countries.Where((c) => c.Iso31661 == row.Iso31661).First());
+                    result.Insert(0, countries.Where((c) => c.Iso31661 == row.Iso31661).First());
                     isoList.Remove(row.Iso31661);
                 }
             }
@@ -536,9 +536,9 @@ namespace TourAssist.Model
 
             foreach (var row in popularities)
             {
-                if (idList.Contains(row.IdRegion))
+                if (row.ToRegionPopularity != 0 && idList.Contains(row.IdRegion))
                 {
-                    result.Add(regions.Where((r) => r.IdRegion == row.IdRegion).First());
+                    result.Insert(0, regions.Where((r) => r.IdRegion == row.IdRegion).First());
                     idList.Remove(row.IdRegion);
                 }
             }
@@ -606,9 +606,9 @@ namespace TourAssist.Model
 
             foreach (var row in popularities)
             {
-                if (idList.Contains(row.ToIdCity))
+                if (row.ToCityPopularity != 0 && idList.Contains(row.ToIdCity))
                 {
-                    result.Add(cities.Where((c) => c.IdCity == row.ToIdCity).First());
+                    result.Insert(0, cities.Where((c) => c.IdCity == row.ToIdCity).First());
                     idList.Remove(row.ToIdCity);
                 }
             }
